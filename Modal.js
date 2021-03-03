@@ -102,8 +102,6 @@
 
       if (node) {
         this.appendNode(wrap, cloning ? this.cloneNode(node, true) : node);
-
-        wrap.reflow();
       }
 
       return wrap;
