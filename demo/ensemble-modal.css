@@ -53,6 +53,8 @@
   border: 0;
   cursor: pointer;
   user-select: none;
+  appearance: none;
+  -webkit-highlight: none;
   -webkit-user-select: none;
   -webkit-appearance: none;
 
@@ -68,9 +70,9 @@
   color: rgba(255, 255, 255, 1);
   background: rgba(0, 0, 0, .7);
 }
-.modal-button:focus {
+.modal-button:active, .modal-button:focus {
   outline: 0;
-  -webkit-tap-highlight: transparent;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .modal-close {
