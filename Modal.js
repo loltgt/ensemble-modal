@@ -8,9 +8,12 @@
  
 'use strict';
 
-(function(ensemble) {
+(function(window, module, require, ensemble) {
 
-  class Modal extends ensemble.base {
+  const base = ensemble ? ensemble.base : require('../ensemble-stack-d1/base');
+
+
+  class Modal extends base {
 
     _defaults() {
       return {
@@ -206,6 +209,7 @@
   }
 
 
-  globalThis.ensemble = { ...ensemble, ...{ Modal } };
+  window.ensemble = { ...ensemble, ...{ Modal } };
+  module.exports = Modal;
 
-}(globalThis.ensemble));
+}((typeof window != 'undefined' ? window : {}), (typeof module != 'undefined' ? module : {}), (typeof require != 'undefined' ? require : function() {}), globalThis.ensemble));
