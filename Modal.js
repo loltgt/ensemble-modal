@@ -37,10 +37,10 @@
     }
 
     _bindings() {
-      this.open = this.open.bind(this);
-      this.close = this.close.bind(this);
-      this.backx = this.backx.bind(this);
-      this.keyboard = this.keyboard.bind(this);
+      this.open = this.binds(this.open);
+      this.close = this.binds(this.close);
+      this.backx = this.binds(this.backx);
+      this.keyboard = this.binds(this.keyboard);
     }
 
     constructor(element, options = {}) {
@@ -100,11 +100,12 @@
     }
 
     content(node, clone) {
-      const cloning = typeof clone != 'undefined' ? clone : this.options.cloning;
+      clone = typeof clone != 'undefined' ? clone : this.options.cloning;
+
       const wrap = this.compo('object');
 
       if (node) {
-        this.appendNode(wrap, cloning ? this.cloneNode(node, true) : node);
+        this.appendNode(wrap, clone ? this.cloneNode(node, true) : node);
       }
 
       return wrap;
@@ -116,26 +117,23 @@
       this.built = false;
     }
 
-    open(e) {
-      e.preventDefault();
-      e.target.blur();
+    open(e, target) {
+      e && ! e.preventDefault() && e.target.blur();
 
       if (this.opened) return;
 
       const opts = this.options;
-      // target
-      const target = e.target;
 
       if (this.built) {
-        this.resume(e.target);
+        this.resume(target);
       } else {
         this.generator();
-        this.populate(e.target);
+        this.populate(target);
       }
 
       this.opened = true;
-      opts.onOpen.call(this, this);
-      this.show();
+      opts.onOpen.call(this, this, target, e);
+      this.show(target);
 
       if (opts.keyboard) {
         this.event('keydown').add(this.keyboard);
@@ -144,17 +142,16 @@
       console.log('open', this);
     }
 
-    close(e) {
-      e.preventDefault();
-      e.target.blur();
+    close(e, target) {
+      e && ! e.preventDefault() && e.target.blur();
 
       if (! this.opened) return;
 
       const opts = this.options;
 
       this.opened = false;
-      opts.onClose.call(this, this);
-      this.hide();
+      opts.onClose.call(this, this, target, e);
+      this.hide(target);
 
       if (opts.keyboard) {
         this.event('keydown').remove(this.keyboard);
@@ -163,7 +160,7 @@
       console.log('close', this);
     }
 
-    show() {
+    show(target) {
       const self = this;
       const root = this.root;
       const box = this.box;
@@ -173,11 +170,11 @@
       setTimeout(function() {
         box.delAttr('hidden');
 
-        self.options.onShow.call(self, self);
+        self.options.onShow.call(self, self, target);
       });
     }
 
-    hide() {
+    hide(target) {
       const self = this;
       const root = this.root;
       const box = this.box;
@@ -187,7 +184,7 @@
       setTimeout(function() {
         self.removeNode(root, box);
 
-        self.options.onHide.call(self, self);
+        self.options.onHide.call(self, self, target);
       }, this.timing(box));
     }
 
