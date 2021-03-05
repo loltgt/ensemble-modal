@@ -32,7 +32,8 @@
         onOpen: function() {},
         onClose: function() {},
         onShow: function() {},
-        onHide: function() {}
+        onHide: function() {},
+        onContent: function() {}
       };
     }
 
@@ -49,6 +50,8 @@
       this._bindings();
 
       this.options = this.defaults(this._defaults(), options);
+      Object.freeze(this.options);
+
       this.element = element;
     }
 
@@ -100,12 +103,16 @@
     }
 
     content(node, clone) {
-      clone = typeof clone != 'undefined' ? clone : this.options.cloning;
-
+      const opts = this.options;
+      clone = typeof clone != 'undefined' ? clone : opts.cloning;
       const wrap = this.compo('object');
 
-      if (node) {
-        this.appendNode(wrap, clone ? this.cloneNode(node, true) : node);
+      let inner = clone ? this.cloneNode(node, true) : node;
+
+      opts.onContent.call(this, this, wrap, inner);
+
+      if (inner) {
+        this.appendNode(wrap, inner);
       }
 
       return wrap;
