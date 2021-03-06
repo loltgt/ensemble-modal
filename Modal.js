@@ -125,7 +125,7 @@
     }
 
     open(e, target) {
-      e && ! e.preventDefault() && e.target.blur();
+      this.event(e);
 
       if (this.opened) return;
 
@@ -150,7 +150,7 @@
     }
 
     close(e, target) {
-      e && ! e.preventDefault() && e.target.blur();
+      this.event(e);
 
       if (! this.opened) return;
 
@@ -174,7 +174,7 @@
 
       self.appendNode(root, box);
 
-      setTimeout(function() {
+      this.delay(function() {
         box.delAttr('hidden');
 
         self.options.onShow.call(self, self, target);
@@ -188,13 +188,14 @@
 
       box.setAttr('hidden', true);
 
-      setTimeout(function() {
+      this.delay(function() {
         self.removeNode(root, box);
 
         self.options.onHide.call(self, self, target);
-      }, this.timing(box));
+      }, box, 3e2);
     }
 
+    //TODO
     backx(e) {
       const target = e.target;
 
@@ -204,6 +205,8 @@
     }
 
     keyboard(e) {
+      this.event(e);
+
       const kcode = e.keyCode || 0;
 
       // Escape
