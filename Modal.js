@@ -112,7 +112,7 @@
       opts.onContent.call(this, this, wrap, inner);
 
       if (inner) {
-        this.appendNode(wrap, inner);
+        wrap.inject(inner);
       }
 
       return wrap;
@@ -168,30 +168,30 @@
     }
 
     show(target) {
-      const self = this;
+      const opts = this.options;
       const root = this.root;
       const box = this.box;
 
-      self.appendNode(root, box);
+      box.install(root);
 
       this.delay(function() {
-        box.delAttr('hidden');
+        box.show();
 
-        self.options.onShow.call(self, self, target);
+        opts.onShow.call(self, self, target);
       });
     }
 
     hide(target) {
-      const self = this;
+      const opts = this.options;
       const root = this.root;
       const box = this.box;
 
-      box.setAttr('hidden', true);
+      box.hide();
 
       this.delay(function() {
-        self.removeNode(root, box);
+        box.uninstall(root);
 
-        self.options.onHide.call(self, self, target);
+        opts.onHide.call(self, self, target);
       }, box, 3e2);
     }
 
