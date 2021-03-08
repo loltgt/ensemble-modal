@@ -64,12 +64,9 @@
         className: opts.ns,
         hidden: true,
         ariaModal: true,
-        role: 'dialog'
+        role: 'dialog',
+        onclick: opts.backClose ? this.backx : null
       });
-
-      if (opts.backClose) {
-        box.onclick = this.backx;
-      }
 
       const cnt = this.cnt = this.compo('content');
       box.append(cnt);
@@ -197,6 +194,8 @@
 
     //TODO
     backx(e) {
+      this.event(e);
+
       const target = e.target;
 
       if (target != this.box && target != this.cnt) return;
