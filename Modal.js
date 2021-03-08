@@ -58,8 +58,6 @@
     generator() {
       const opts = this.options;
 
-      this.root = this.selector(opts.root);
-
       const box = this.box = this.compo('dialog', true, {
         className: opts.ns,
         hidden: true,
@@ -69,9 +67,10 @@
       });
 
       const cnt = this.cnt = this.compo('content');
-      box.append(cnt);
 
       const close = this.compo('button', 'close', opts.close);
+
+      box.append(cnt);
 
       if (opts.windowed) {
         box.classList.add(opts.ns + '-windowed');
@@ -84,6 +83,7 @@
         box.classList.add(opts.ns + '-fx');
       }
 
+      this.root = this.selector(opts.root);
       this.built = true;
 
       return box;
@@ -101,8 +101,9 @@
 
     content(node, clone) {
       const opts = this.options;
-      clone = typeof clone != 'undefined' ? clone : opts.cloning;
       const wrap = this.compo('object');
+
+      clone = typeof clone != 'undefined' ? clone : opts.cloning;
 
       let inner = clone ? this.cloneNode(node, true) : node;
 
@@ -196,9 +197,7 @@
     backx(e) {
       this.event(e);
 
-      const target = e.target;
-
-      if (target != this.box && target != this.cnt) return;
+      if (e.target != this.box && e.target != this.cnt) return;
 
       this.close(e);
     }
