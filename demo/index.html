@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>loltgt ensemble.Modal test</title>
-<link rel="stylesheet" href="../../ensemble-modal/ensemble-modal.css">
+<link rel="stylesheet" href="../../ensemble-modal/src/scss/ensemble-modal.css">
 <style>
 * { box-sizing: border-box; }
 html { line-height: 1.15; }
@@ -40,10 +40,12 @@ section button { margin: 1.5rem 0 0; }
 </section>
 </main>
 
+
 <script src="../../ensemble/Compo.js"></script>
+<script src="../../ensemble/Data.js"></script>
 <script src="../../ensemble/Event.js"></script>
 <script src="../../ensemble-stack-d1/base.js"></script>
-<script src="../../ensemble-modal/Modal.js"></script>
+<script src="../../ensemble-modal/dist/js/ensemble-modal.min.js"></script>
 <script>
 const element = document.querySelector('.content');
 const modal = new ensemble.Modal(element);

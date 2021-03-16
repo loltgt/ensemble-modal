@@ -10,7 +10,7 @@
 
 (function(window, module, require, ensemble) {
 
-  const base = ensemble ? ensemble.base : require('../ensemble-stack-d1/base');
+  const base = ensemble ? ensemble.base : require('../../../../ensemble-stack-d1/base');
 
 
   class Modal extends base {
