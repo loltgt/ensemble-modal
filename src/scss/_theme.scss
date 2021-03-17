@@ -1,0 +1,46 @@
+
+
+// Container
+
+$ensemble-modal_foreground: #000 !default;
+$ensemble-modal_background: rgba(100, 100, 100, .76) !default;
+
+$ensemble-modal_zindex: 1000 !default;
+
+
+
+// Button
+
+$ensemble-modal_button_padding: 1rem !default;
+$ensemble-modal_button_font-size: 1.5rem !default;
+$ensemble-modal_button_border: 0 !default;
+
+$ensemble-modal_button_foreground: rgba(255, 255, 255, .93) !default;
+$ensemble-modal_button_background: rgba(0, 0, 0, 0) !default;
+
+$ensemble-modal_button_focus_foreground: rgba(255, 255, 255, 1) !default;
+$ensemble-modal_button_focus_background: rgba(0, 0, 0, .7) !default;
+
+$ensemble-modal_button_disabled_background: none !important !default;
+$ensemble-modal_button_disabled_opacity: .1 !default;
+
+
+
+// Fx
+
+$ensemble-modal_fx_container_transition: opacity 70ms linear !default;
+$ensemble-modal_fx_button_transition: all 30ms linear !default;
+
+
+
+// Responsive
+
+
+// 576 – xs
+
+$ensemble-modal_xs__button_font-size: 3rem !default;
+
+// 992 – md
+
+$ensemble-modal_md__button_font-size: 3rem !default;
+
