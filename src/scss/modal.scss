@@ -25,8 +25,14 @@
   left: 0;
   width: 100%;
   height: 100%;
+@if $ensemble_compat {
+  display: block;
+}
   display: flex;
   flex-direction: column;
+@if $ensemble_compat {
+  font-size: 16px;
+}
   font-size: 1rem;
   font-weight: normal;
   text-align: center;
@@ -51,6 +57,9 @@
   position: absolute;
   top: 50%;
   left: 50%;
+@if $ensemble_compat {
+  display: block;
+}
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -58,11 +67,19 @@
   width: 100%;
   height: 100%;
   transform: translate(-50%, -50%);
+@if $ensemble_compat {
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
 }
 
 .modal-button {
   position: absolute;
   width: auto;
+@if $ensemble_compat {
+  font-size: floor($ensemble-modal_button_font-size / 1rem * 16px);
+}
   padding: $ensemble-modal_button_padding;
   font-size: $ensemble-modal_button_font-size;
   line-height: 1;
@@ -78,7 +95,7 @@
   background: $ensemble-modal_button_background;
 }
 .modal-button:disabled {
-  background: $ensemble-modal_button_disabled_opacity;
+  background: $ensemble-modal_button_disabled_background;
   opacity: $ensemble-modal_button_disabled_opacity;
   cursor: default;
 }
@@ -104,25 +121,44 @@
 }
 
 .modal.modal-fx[hidden] {
+@if $ensemble_compat {
+  display: block !important;
+}
   display: flex !important;
   opacity: 0;
 }
 .modal.modal-fx {
   opacity: 1;
   transition: $ensemble-modal_fx_container_transition;
+@if $ensemble_compat {
+  -webkit-transition: $ensemble-modal_fx_container_transition;
+  -moz-transition: $ensemble-modal_fx_container_transition;
+  -ms-transition: $ensemble-modal_fx_container_transition;
+}
 }
 .modal.modal-fx .modal-button {
   transition: $ensemble-modal_fx_button_transition;
+@if $ensemble_compat {
+  -webkit-transition: $ensemble-modal_fx_button_transition;
+  -moz-transition: $ensemble-modal_fx_button_transition;
+  -ms-transition: $ensemble-modal_fx_button_transition;
+}
 }
 
 
 @media (min-width: 576px) {
   .modal-button {
+@if $ensemble_compat {
+    font-size: floor($ensemble-modal_xs__button_font-size / 1rem * 16px);
+}
     font-size: $ensemble-modal_xs__button_font-size;
   }
 }
 @media (min-width: 992px) {
   .modal-button {
+@if $ensemble_compat {
+    font-size: floor($ensemble-modal_md__button_font-size / 1rem * 16px);
+}
     font-size: $ensemble-modal_md__button_font-size;
   }
 }
