@@ -99,14 +99,17 @@
   opacity: $ensemble-modal_button_disabled_opacity;
   cursor: default;
 }
-.modal-button:hover, .modal-button:focus {
+.modal-button:active, .modal-button:focus {
   color: $ensemble-modal_button_focus_foreground;
   background: $ensemble-modal_button_focus_background;
-
-}
-.modal-button:active, .modal-button:focus {
   outline: 0;
   -webkit-tap-highlight-color: transparent;
+}
+@media (hover:hover) {
+  .modal-button:hover {
+    color: $ensemble-modal_button_focus_foreground;
+    background: $ensemble-modal_button_focus_background;
+  }
 }
 
 .modal-close {

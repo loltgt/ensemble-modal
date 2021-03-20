@@ -6,9 +6,9 @@ $ensemble_compat: false !default;
 // Container
 
 $ensemble-modal_foreground: #000 !default;
-$ensemble-modal_background: rgba(100, 100, 100, .76) !default;
+$ensemble-modal_background: rgba(100, 100, 100, .7) !default;
 
-$ensemble-modal_zindex: 1000 !default;
+$ensemble-modal_zindex: 1001 !default;
 
 
 
@@ -18,7 +18,7 @@ $ensemble-modal_button_padding: 1rem !default;
 $ensemble-modal_button_font-size: 1.5rem !default;
 $ensemble-modal_button_border: 0 !default;
 
-$ensemble-modal_button_foreground: rgba(255, 255, 255, .93) !default;
+$ensemble-modal_button_foreground: rgba(255, 255, 255, .92) !default;
 $ensemble-modal_button_background: rgba(0, 0, 0, 0) !default;
 
 $ensemble-modal_button_focus_foreground: rgba(255, 255, 255, 1) !default;

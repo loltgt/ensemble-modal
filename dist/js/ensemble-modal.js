@@ -444,7 +444,7 @@
       return obj ? new Data(this.options.ns, obj) : Data;
     }
 
-    event(event, node, concurrency = true) {
+    event(event, node) {
       if (typeof event === 'string') {
         return new Event(this.options.ns, event, node);
       } else if (event) {
@@ -537,7 +537,7 @@
         fx: true,
         windowed: false,
         cloning: true,
-        backClose: false,
+        backClose: true,
         keyboard: true,
         close: {
           onclick: this.close,
@@ -571,13 +571,20 @@
 
     generator() {
       const opts = this.options;
-      const box = this.box = this.compo('dialog', true, {
+      const data = this.box = this.data({
+        onclick: false
+      });
+      const box = this.box.wrap = this.compo('dialog', true, {
         className: opts.ns,
         hidden: true,
         ariaModal: true,
         role: 'dialog',
-        onclick: opts.backClose ? this.backx : null
-      });
+        onclick: function () {
+          data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
+        }
+      }); //TODO
+      // data.cnt
+
       const cnt = this.cnt = this.compo('content');
       const close = this.compo('button', 'close', opts.close);
       box.append(cnt);
@@ -589,13 +596,17 @@
         box.append(close);
       }
 
+      if (opts.backClose) {
+        this.box.onclick = this.backx;
+      }
+
       if (opts.fx) {
         box.classList.add(opts.ns + '-fx');
       }
 
       this.root = this.selector(opts.root);
       this.built = true;
-      return box;
+      return this.box;
     }
 
     populate(target) {
@@ -623,7 +634,9 @@
 
 
     destroy() {
-      this.box.remove();
+      const root = this.root;
+      const box = this.box.wrap;
+      this.removeNode(root, box);
       this.built = false;
     }
 
@@ -668,7 +681,8 @@
     show(target) {
       const opts = this.options;
       const root = this.root;
-      const box = this.box;
+      this.box;
+      const box = this.box.wrap;
       box.install(root);
       this.delay(function () {
         box.show();
@@ -679,19 +693,68 @@
     hide(target) {
       const opts = this.options;
       const root = this.root;
-      const box = this.box;
+      this.box;
+      const box = this.box.wrap;
       box.hide();
       this.delay(function () {
         box.uninstall(root);
         opts.onHide.call(self, self, target);
       }, box, 3e2);
-    } //TODO
+    } //TODO test
 
 
     backx(e) {
       this.event(e);
-      if (e.target != this.box && e.target != this.cnt) return;
-      this.close(e);
+      const target = e.target;
+      const parent = target.parentElement;
+      const ns = this.options.ns;
+      var regex;
+      regex = new RegExp(ns + '-content');
+
+      if (regex.test(target.className) || regex.test(parent.className)) {
+        console.log('ensemble.modal.backx', 'outside cropbox area', ':then: close', parent, target);
+        this.close(e);
+      }
+
+      regex = new RegExp(ns + '-object');
+
+      if (!regex.test(target.className)) {
+        console.log('ensemble.modal.backx', 'outside cropbox area', ':then: skip', parent, target);
+        return;
+      }
+
+      const inner = target.firstElementChild,
+            inner_w = inner.offsetWidth,
+            inner_h = inner.offsetHeight;
+      const target_t = target.offsetTop,
+            target_l = target.offsetLeft,
+            target_w = target.offsetWidth,
+            target_h = target.offsetHeight;
+      const x = event.x,
+            y = event.y;
+      const crop_t = (target_h - inner_h) / 2,
+            crop_l = (target_w - inner_w) / 2,
+            crop_b = crop_t + inner_h,
+            crop_r = crop_l + inner_w;
+      console.log('ensemble.modal.backx', 'coords', {
+        x,
+        y
+      }, {
+        target_t,
+        target_l,
+        target_w,
+        target_h
+      }, {
+        crop_t,
+        crop_r,
+        crop_b,
+        crop_l
+      });
+
+      if ((y > target_t || x > target_l || x < target_w || y < target_h) && (y < crop_t || x > crop_r || y > crop_b || x < crop_l)) {
+        console.log('ensemble.modal.backx', 'outside cropbox area', ':then: close', parent, target);
+        this.close(e);
+      }
     }
 
     keyboard(e) {
