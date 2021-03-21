@@ -10,12 +10,10 @@
 
 /**
  * @namespace ensemble
- * @module Modal
  * @exports Modal
  */
 
 import base from '../../../ensemble-stack-d1/base.js';
-
 
 
 /**
@@ -95,7 +93,7 @@ class Modal extends base {
   /**
    * The generator creates the container box with almost everything the component needs.
    *
-   * @todo
+   * @todo TODO
    */
   generator() {
     const opts = this.options;
@@ -141,7 +139,7 @@ class Modal extends base {
    * In this stage the component is populated with all the content progeny.
    *
    * @param {Element} target - The element that is invoking
-   * @todo
+   * @todo TODO
    */
   populate(target) {
     console.log('ensemble.Modal', 'populate()', target);
@@ -155,7 +153,7 @@ class Modal extends base {
    * Processing when the component is resumed.
    *
    * @param {Element} target - The element that is invoking
-   * @todo
+   * @todo TODO
    */
   resume(target) {
     console.log('ensemble.Modal', 'resume()', target);
@@ -167,7 +165,7 @@ class Modal extends base {
    * @param {Element} node - A valid Element node
    * @param {boolean} clone - Eventually clones Element nodes
    * @returns {Element} wrap - The wrapped (cloned) Element node
-   * @todo
+   * @todo TODO
    */
   content(node, clone) {
     const opts = this.options;
@@ -187,7 +185,7 @@ class Modal extends base {
   }
 
   /**
-   * @todo
+   * @todo TODO
    */
   destroy() {
     const root = this.root;
