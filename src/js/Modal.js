@@ -2,6 +2,7 @@
  * loltgt ensemble.Modal
  *
  * @version 0.0.1
+ * @link https://github.com/loltgt/ensemble-modal
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
  */
@@ -13,7 +14,7 @@
  * @exports Modal
  */
 
-import base from '../../../ensemble-stack-d1/base.js';
+import base from '../../../ensemble-stack-d1/lib/base.js';
 
 
 /**
@@ -21,10 +22,12 @@ import base from '../../../ensemble-stack-d1/base.js';
  *
  * @class
  * @extends base
- * @param {Element} element - A valid Element node to display in the modal dialog
- * @param {objects} options - Options object
+ * @inheritdoc
+ * @param {Element} [element] - A valid Element node to display in the modal dialog
+ * @param {object} options - Options object
  * @param {string} [options.ns=modal] - The namespace for modal
  * @param {string} [options.root=body] - The root Element node
+ * @param {(string|string[])} [options.className=modal] - The component CSS class name
  * @param {boolean} [options.fx=true] - Switch for allow effects
  * @param {boolean} [options.windowed=false] - Switch for framing in a window
  * @param {boolean} [options.cloning=true] - Allow cloning of passed element(s)
@@ -36,6 +39,11 @@ import base from '../../../ensemble-stack-d1/base.js';
  * @param {function} [options.onShow] - onShow callback, fires when show modal, after it openes
  * @param {function} [options.onHide] - onHide callback, fires when hide modal, before it closes
  * @param {function} [options.onContent] - onContent callback, fires when a content will be shown
+ * @example
+ * var modal = new ensemble.Modal(document.getElementById('inline-content-to-display'), {});
+ * modal.open();
+ * modal.close();
+ * @todo arguments
  */
 class Modal extends base {
 
@@ -48,6 +56,7 @@ class Modal extends base {
     return {
       ns: 'modal',
       root: 'body',
+      className: 'modal',
       fx: true,
       windowed: false,
       cloning: true,
@@ -79,15 +88,12 @@ class Modal extends base {
   /**
    * Constructor method.
    */
-  constructor(element, options = {}) {
-    super();
+  constructor() {
+    if (! new.target) {
+      throw 'ensemble.Modal error: Bad invocation, must be called with new.';
+    }
 
-    this._bindings();
-
-    this.options = this.defaults(this._defaults(), options);
-    Object.freeze(this.options);
-
-    this.element = element;
+    super(...arguments);
   }
 
   /**
@@ -102,18 +108,20 @@ class Modal extends base {
       onclick: false
     });
 
-    const box = this.box.wrap = this.compo('dialog', true, {
-      className: opts.ns,
+    const box = this.box.wrap = this.compo('dialog', false, {
+      className: typeof opts.className == 'object' ? opts.className.join(' ') : opts.className,
       hidden: true,
       ariaModal: true,
       role: 'dialog',
-      onclick: function() { data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments); },
+      onclick: function() {
+        data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
+      }
     });
     //TODO
     // data.cnt
-    const cnt = this.cnt = this.compo('content');
+    const cnt = this.cnt = this.compo(false, 'content');
 
-    const close = this.compo('button', 'close', opts.close);
+    const close = this.compo('button', ['button', 'close'], opts.close);
 
     box.append(cnt);
 
@@ -144,6 +152,8 @@ class Modal extends base {
   populate(target) {
     console.log('ensemble.Modal', 'populate()', target);
 
+    if (! this.element) return;
+
     const content = this.content(this.element);
 
     this.cnt.append(content);
@@ -169,7 +179,7 @@ class Modal extends base {
    */
   content(node, clone) {
     const opts = this.options;
-    const wrap = this.compo('object');
+    const wrap = this.compo(false, 'object');
 
     clone = typeof clone != 'undefined' ? clone : opts.cloning;
 
@@ -321,12 +331,21 @@ class Modal extends base {
       return;
     }
 
-    const inner = target.firstElementChild, inner_w = inner.offsetWidth, inner_h = inner.offsetHeight;
-    const target_t = target.offsetTop, target_l = target.offsetLeft, target_w = target.offsetWidth, target_h = target.offsetHeight;
+    const inner = target.firstElementChild;
+    const inner_w = inner.offsetWidth;
+    const inner_h = inner.offsetHeight;
+    const target_t = target.offsetTop;
+    const target_l = target.offsetLeft;
+    const target_w = target.offsetWidth;
+    const target_h = target.offsetHeight;
 
-    const x = event.x, y = event.y;
+    const x = event.x;
+    const y = event.y;
 
-    const crop_t = (target_h - inner_h) / 2, crop_l = (target_w - inner_w) / 2, crop_b = crop_t + inner_h, crop_r = crop_l + inner_w;
+    const crop_t = (target_h - inner_h) / 2;
+    const crop_l = (target_w - inner_w) / 2;
+    const crop_b = crop_t + inner_h;
+    const crop_r = crop_l + inner_w;
 
     console.log('ensemble.Modal', 'backx()', 'coords', { x, y }, { target_t, target_l, target_w, target_h }, { crop_t, crop_r, crop_b, crop_l });
 
@@ -351,7 +370,7 @@ class Modal extends base {
     const kcode = e.keyCode || 0;
 
     // Escape
-    if (kcode === 27) this.close(e);
+    if (kcode == 27) this.close(e);
   }
 
 }

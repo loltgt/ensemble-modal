@@ -1,10 +1,4 @@
-/*!
- * loltgt ensemble.Modal
- *
- * @version 0.0.1
- * @copyright Copyright (C) Leonardo Laureti
- * @license MIT License
- */
+/*! * loltgt/ensemble.Modal * * @version 0.0.1 * @link https://github.com/loltgt/ensemble-modal * @copyright Copyright (C) Leonardo Laureti * @license MIT License */
 .modal, .modal-content, .modal-button {
   margin: 0;
   padding: 0;

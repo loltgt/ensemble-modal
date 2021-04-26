@@ -31,7 +31,8 @@
 <script src="../../ensemble-modal/dist/js/ensemble-modal.min.js"></script>
 <script>
 const element = document.querySelector('.content');
-const modal = new ensemble.Modal(element);
+//TODO arguments
+const modal = new ensemble.Modal(element, {});
 const button = document.getElementById('button-modal');
 button.addEventListener('click', modal.open, true);
 </script>
