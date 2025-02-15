@@ -2,14 +2,12 @@
 $ensemble_compat: false !default;
 
 
-
 // Container
 
 $ensemble-modal_foreground: #000 !default;
 $ensemble-modal_background: rgba(100, 100, 100, .7) !default;
 
 $ensemble-modal_zindex: 1001 !default;
-
 
 
 // Button
@@ -28,22 +26,17 @@ $ensemble-modal_button_disabled_background: none !important !default;
 $ensemble-modal_button_disabled_opacity: .1 !default;
 
 
-
 // Fx
 
 $ensemble-modal_fx_container_transition: opacity 70ms linear !default;
 $ensemble-modal_fx_button_transition: all 30ms linear !default;
 
 
-
 // Responsive
 
-
 // 576 – xs
-
 $ensemble-modal_xs__button_font-size: 3rem !default;
 
 // 992 – md
-
 $ensemble-modal_md__button_font-size: 3rem !default;
 

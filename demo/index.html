@@ -3,35 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>loltgt ensemble.Modal test</title>
+<title>ensemble Modal demo</title>
 <link rel="stylesheet" href="../../ensemble-modal/dist/css/ensemble-modal.css">
 <link rel="stylesheet" href="demo-ensemble-modal.css">
 </head>
 <body>
 <main>
-<h1>loltgt ensemble.Modal test</h1>
-
-<p><strong>beta stage</strong>.</p>
-
+<h1>ensemble Modal demo</h1>
 
 <section>
 <h2>ensemble.Modal</h2>
 
 <span class="content">Show this content in a modal.</span>
 
-<button id="button-modal">Open in modal</button>
+<button id="button-modal">Open modal</button>
 </section>
 </main>
 
-
-<!-- <script src="../../ensemble/Compo.js"></script> -->
-<!-- <script src="../../ensemble/Data.js"></script> -->
-<!-- <script src="../../ensemble/Event.js"></script> -->
-<!-- <script src="../../ensemble-stack-d1/base.js"></script> -->
+<!-- <script src="../../ensemble/src/js/Compo.js"></script> -->
+<!-- <script src="../../ensemble/src/js/Data.js"></script> -->
+<!-- <script src="../../ensemble/src/js/Event.js"></script> -->
+<!-- <script src="../../ensemble/src/js/base.js"></script> -->
+<!-- <script src="../../ensemble-modal/src/js/Modal.js"></script> -->
 <script src="../../ensemble-modal/dist/js/ensemble-modal.min.js"></script>
 <script>
 const element = document.querySelector('.content');
-//TODO arguments
+
 const modal = new ensemble.Modal(element, {});
 const button = document.getElementById('button-modal');
 button.addEventListener('click', modal.open, true);

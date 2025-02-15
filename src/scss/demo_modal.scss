@@ -1,0 +1,25 @@
+/**
+ * ensemble demo Modal
+ *
+ * @version 0.0.4
+ * @copyright Copyright (C) Leonardo Laureti
+ * @license MIT License
+ */
+
+@import "demo_common";
+@import "demo_button";
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 5rem;
+  color: #222;
+  background: #eee;
+  border-radius: 3rem;
+}
+.modal .content {
+  min-width: 50vh;
+  min-height: 25vh;
+}
+

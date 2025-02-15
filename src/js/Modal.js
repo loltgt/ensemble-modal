@@ -1,7 +1,7 @@
 /*!
- * loltgt ensemble.Modal
+ * ensemble Modal
  *
- * @version 0.0.2
+ * @version 0.0.4
  * @link https://github.com/loltgt/ensemble-modal
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
@@ -14,41 +14,40 @@
  * @exports Modal
  */
 
-import base from '../../../ensemble-stack-d1/lib/base.js';
+import base from '@loltgt/ensemble';
 
 
 /**
- * ensemble.Modal component.
+ * Modal ensemble component
  *
  * @class
  * @extends base
  * @inheritdoc
- * @param {Element} [element] - A valid Element node to display in the modal dialog
- * @param {object} options - Options object
- * @param {string} [options.ns=modal] - The namespace for modal
- * @param {string} [options.root=body] - The root Element node
- * @param {(string|string[])} [options.className=modal] - The component CSS class name
- * @param {boolean} [options.fx=true] - Switch for allow effects
- * @param {boolean} [options.windowed=false] - Switch for framing in a window
- * @param {boolean} [options.cloning=true] - Allow cloning of passed element(s)
- * @param {boolean} [options.backClose=true] - Switch for closing on tap/click outside the content
- * @param {boolean} [options.keyboard=true] - Switch for keyboard navigation
- * @param {object} [options.close] - Custom parameters for close button
- * @param {function} [options.onOpen] - onOpen callback, fires when open modal
- * @param {function} [options.onClose] - onOpen callback, fires when close modal
- * @param {function} [options.onShow] - onShow callback, fires when show modal, after it openes
- * @param {function} [options.onHide] - onHide callback, fires when hide modal, before it closes
- * @param {function} [options.onContent] - onContent callback, fires when a content will be shown
+ * @param {Element} [element] A valid Element node to display in the modal dialog
+ * @param {object} options Options object
+ * @param {string} [options.ns=modal] The namespace for modal
+ * @param {string} [options.root=body] The root Element node
+ * @param {(string|string[])} [options.className=modal] The component CSS class name
+ * @param {boolean} [options.fx=true] Allow effects
+ * @param {boolean} [options.windowed=false] Allow framing in a window
+ * @param {boolean} [options.cloning=true] Allow cloning of passed element(s)
+ * @param {boolean} [options.backClose=true] Allow closing on tap or click outside the content area
+ * @param {boolean} [options.keyboard=true] Allow keyboard navigation
+ * @param {object} [options.close] Parameters for close button
+ * @param {function} [options.onOpen] onOpen callback, fires when open modal
+ * @param {function} [options.onClose] onOpen callback, fires when close modal
+ * @param {function} [options.onShow] onShow callback, fires when show modal, after it openes
+ * @param {function} [options.onHide] onHide callback, fires when hide modal, before it closes
+ * @param {function} [options.onContent] onContent callback, fires when a content will be shown
+ * @todo L10n and a11y
  * @example
- * var modal = new ensemble.Modal(document.getElementById('inline-content-to-display'), {});
+ * var modal = new ensemble.Modal(document.getElementById('inline-content'), {windowed: true});
  * modal.open();
- * modal.close();
- * @todo arguments
  */
 class Modal extends base {
 
   /**
-   * Options object default properties.
+   * Default properties
    *
    * @returns {object}
    */
@@ -76,67 +75,64 @@ class Modal extends base {
   }
 
   /**
-   * Methods binding.
+   * Methods binding
    */
   _bindings() {
     this.open = this.binds(this.open);
     this.close = this.binds(this.close);
-    this.backx = this.binds(this.backx);
+    this.backdrop = this.binds(this.backdrop);
     this.keyboard = this.binds(this.keyboard);
   }
 
   /**
-   * Constructor method.
+   * Constructor method
    */
   constructor() {
     if (! new.target) {
-      throw 'ensemble.Modal error: Bad invocation, must be called with new.';
+      throw 'Bad invocation. Must be called with `new`.';
     }
 
     super(...arguments);
   }
 
   /**
-   * The generator creates the container box with almost everything the component needs.
-   *
-   * @todo TODO
+   * Element generator
    */
   generator() {
     const opts = this.options;
 
-    const data = this.box = this.data({
+    const data = this.modal = this.data({
       onclick: false
     });
 
-    const box = this.box.wrap = this.compo('dialog', false, {
+    const modal = this.modal.wrap = this.compo('dialog', false, {
       className: typeof opts.className == 'object' ? opts.className.join(' ') : opts.className,
       hidden: true,
       ariaModal: true,
-      role: 'dialog',
+      // role: 'dialog',
       onclick: function() {
         data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
       }
     });
-    //TODO
-    // data.cnt
+    //TODO dataset
     const cnt = this.cnt = this.compo(false, 'content');
 
     const close = this.compo('button', ['button', 'close'], opts.close);
 
-    box.append(cnt);
+    modal.append(cnt);
 
     if (opts.windowed) {
-      box.classList.add(opts.ns + '-windowed');
+      modal.classList.add(opts.ns + '-windowed');
       cnt.append(close);
     } else {
-      box.append(close);
+      modal.append(close);
     }
     if (opts.backClose) {
-      this.box.onclick = this.backx;
+      data.onclick = this.backdrop;
     }
 
     if (opts.fx) {
-      box.classList.add(opts.ns + '-fx');
+      modal.classList.add(opts.ns + '-fx');
     }
 
     this.root = this.selector(opts.root);
@@ -144,13 +140,12 @@ class Modal extends base {
   }
 
   /**
-   * In this stage the component is populated with all the content progeny.
+   * On this stage the component is populated with progeny
    *
-   * @param {Element} target - The element that is invoking
-   * @todo TODO
+   * @param {Element} target The element is invoking
    */
   populate(target) {
-    console.log('ensemble.Modal', 'populate()', target);
+    console.log('populate', target);
 
     if (! this.element) return;
 
@@ -160,22 +155,20 @@ class Modal extends base {
   }
 
   /**
-   * Processing when the component is resumed.
+   * Processing when the component is resumed
    *
-   * @param {Element} target - The element that is invoking
-   * @todo TODO
+   * @param {Element} target The element is invoking
    */
   resume(target) {
-    console.log('ensemble.Modal', 'resume()', target);
+    console.log('resume', target);
   }
 
   /**
-   * The single content.
+   * The single content
    *
-   * @param {Element} node - A valid Element node
-   * @param {boolean} clone - Eventually clones Element nodes
-   * @returns {Element} wrap - The wrapped (cloned) Element node
-   * @todo TODO
+   * @param {Element} node A valid Element node
+   * @param {boolean} clone Clones Element nodes
+   * @returns {Element} wrap The wrapped (cloned) Element node
    */
   content(node, clone) {
     const opts = this.options;
@@ -188,31 +181,31 @@ class Modal extends base {
     opts.onContent.call(this, this, wrap, inner);
 
     if (inner) {
-      wrap.inject(inner);
+      wrap.fill(inner);
     }
 
     return wrap;
   }
 
   /**
-   * @todo TODO
+   * Destroys the modal
    */
   destroy() {
     const root = this.root;
-    const box = this.box.wrap;
+    const modal = this.modal.wrap;
 
-    this.removeNode(root, box);
+    this.removeNode(root, modal);
     this.built = false;
   }
 
   /**
-   * Opens the modal.
+   * Opens the modal
    *
-   * @param {Event} e - An Event
-   * @param {Element} target - The element that is invoking
+   * @param {Event} evt An Event
+   * @param {Element} target The element is invoking
    */
-  open(e, target) {
-    this.event(e);
+  open(evt, target) {
+    this.event(evt);
 
     if (this.opened) return;
 
@@ -226,90 +219,89 @@ class Modal extends base {
     }
 
     this.opened = true;
-    opts.onOpen.call(this, this, target, e);
+    opts.onOpen.call(this, this, target, evt);
     this.show(target);
 
     if (opts.keyboard) {
       this.event('keydown').add(this.keyboard);
     }
 
-    console.log('ensemble.Modal', 'open()', this);
+    console.log('open', this);
   }
 
   /**
-   * Closes the modal.
+   * Closes the modal
    *
-   * @param {Event} e - An Event
-   * @param {Element} target - The element that is invoking
+   * @param {Event} evt An Event
+   * @param {Element} target The element is invoking
    */
-  close(e, target) {
-    this.event(e);
+  close(evt, target) {
+    this.event(evt);
 
     if (! this.opened) return;
 
     const opts = this.options;
 
     this.opened = false;
-    opts.onClose.call(this, this, target, e);
+    opts.onClose.call(this, this, target, evt);
     this.hide(target);
 
     if (opts.keyboard) {
       this.event('keydown').remove(this.keyboard);
     }
 
-    console.log('ensemble.Modal', 'close()', this);
+    console.log('close', this);
   }
 
   /**
-   * Shows the modal.
+   * Shows the modal
    *
-   * @param {Element} target - The element that is invoking
+   * @param {Element} target The element is invoking
    */
   show(target) {
     const opts = this.options;
     const root = this.root;
-    const data = this.box;
-    const box = this.box.wrap;
+    const data = this.modal;
+    const modal = this.modal.wrap;
 
-    box.install(root);
+    modal.bound(root);
 
     this.delay(function() {
-      box.show();
+      modal.show();
 
       opts.onShow.call(self, self, target);
     });
   }
 
   /**
-   * Hides the modal.
+   * Hides the modal
    *
-   * @param {Element} target - The element that is invoking
+   * @param {Element} target The element is invoking
    */
   hide(target) {
     const opts = this.options;
     const root = this.root;
-    const data = this.box;
-    const box = this.box.wrap;
+    const data = this.modal;
+    const modal = this.modal.wrap;
 
-    box.hide();
+    modal.hide();
 
     this.delay(function() {
-      box.uninstall(root);
+      modal.unbound(root);
 
       opts.onHide.call(self, self, target);
-    }, box, 3e2);
+    }, modal, 3e2);
   }
 
   /**
-   * Handles the close on tap/click outside the content.
+   * Handles the close on tap or click outside the content
    *
-   * @param {Event} e - An Event
-   * @todo test
+   * @param {Event} evt An Event
    */
-  backx(e) {
-    this.event(e);
+  backdrop(evt) {
+    this.event(evt);
 
-    const target = e.target;
+    const target = evt.target;
     const parent = target.parentElement;
     const ns = this.options.ns;
 
@@ -318,15 +310,15 @@ class Modal extends base {
     regex = new RegExp(ns + '-content');
 
     if (regex.test(target.className) || regex.test(parent.className)) {
-      console.log('ensemble.Modal', 'backx()', 'outside cropbox area', ':then: close', parent, target);
+      console.log('backdrop', 'overflow', 'close', parent, target);
 
-      this.close(e);
+      this.close(evt);
     }
 
     regex = new RegExp(ns + '-object');
 
     if (! regex.test(target.className)) {
-      console.log('ensemble.Modal', 'backx()', 'outside cropbox area', ':then: skip', parent, target);
+      console.log('backdrop', 'overflow', 'return', parent, target);
 
       return;
     }
@@ -339,38 +331,38 @@ class Modal extends base {
     const target_w = target.offsetWidth;
     const target_h = target.offsetHeight;
 
-    const x = event.x;
-    const y = event.y;
+    const x = evt.x;
+    const y = evt.y;
 
     const crop_t = (target_h - inner_h) / 2;
     const crop_l = (target_w - inner_w) / 2;
     const crop_b = crop_t + inner_h;
     const crop_r = crop_l + inner_w;
 
-    console.log('ensemble.Modal', 'backx()', 'coords', { x, y }, { target_t, target_l, target_w, target_h }, { crop_t, crop_r, crop_b, crop_l });
+    console.log('backdrop', 'coords', {x, y}, {target_t, target_l, target_w, target_h}, {crop_t, crop_r, crop_b, crop_l});
 
     if (
       (y > target_t || x > target_l || x < target_w || y < target_h) &&
       (y < crop_t || x > crop_r || y > crop_b || x < crop_l)
     ) {
-      console.log('ensemble.Modal', 'backx()', 'outside cropbox area', ':then: close', parent, target);
+      console.log('backdrop', 'overflow', 'close', parent, target);
 
-      this.close(e);
+      this.close(evt);
     }
   }
 
   /**
-   * Captures keyboard codes corresponding to functions to be triggered.
+   * Handles keyboard inputs
    *
-   * @param {Event} e - An Event
+   * @param {Event} evt An Event
    */
-  keyboard(e) {
-    this.event(e);
+  keyboard(evt) {
+    this.event(evt);
 
-    const kcode = e.keyCode || 0;
+    const kcode = evt.keyCode || 0;
 
     // Escape
-    if (kcode == 27) this.close(e);
+    if (kcode == 27) this.close(evt);
   }
 
 }

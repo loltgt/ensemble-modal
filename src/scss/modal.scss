@@ -1,11 +1,13 @@
 /*!
- * loltgt ensemble.Modal
+ * ensemble Modal
  *
- * @version 0.0.2
+ * @version 0.0.4
  * @link https://github.com/loltgt/ensemble-modal
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
  */
+
+@use "sass:math";
 
 %ensemble-modal_css_reset {
   margin: 0;
@@ -40,7 +42,6 @@
   border: 0;
   z-index: $ensemble-modal_zindex;
   overflow: hidden;
-
   color: $ensemble-modal_foreground;
   background: $ensemble-modal_background;
 }
@@ -79,7 +80,7 @@
   position: absolute;
   width: auto;
 @if $ensemble_compat {
-  font-size: floor($ensemble-modal_button_font-size / 1rem * 16px);
+  font-size: math.floor(math.div($ensemble-modal_button_font-size, 1rem) * 16px);
 }
   padding: $ensemble-modal_button_padding;
   font-size: $ensemble-modal_button_font-size;
@@ -88,10 +89,10 @@
   cursor: pointer;
   user-select: none;
   appearance: none;
-  -webkit-highlight: none;
+@if $ensemble_compat {
   -webkit-user-select: none;
   -webkit-appearance: none;
-
+}
   color: $ensemble-modal_button_foreground;
   background: $ensemble-modal_button_background;
 }
@@ -115,7 +116,11 @@
 
 .modal-close {
   top: 0;
+@if $ensemble_compat {
   right: 0;
+} @else {
+  inset-inline: auto 0;
+}
 }
 
 
@@ -150,18 +155,21 @@
 }
 
 
+//TODO
 @media (min-width: 576px) {
   .modal-button {
 @if $ensemble_compat {
-    font-size: floor($ensemble-modal_xs__button_font-size / 1rem * 16px);
+    font-size: math.floor(math.div($ensemble-modal_xs__button_font-size, 1rem) * 16px);
 }
     font-size: $ensemble-modal_xs__button_font-size;
   }
 }
+
+//TODO
 @media (min-width: 992px) {
   .modal-button {
 @if $ensemble_compat {
-    font-size: floor($ensemble-modal_md__button_font-size / 1rem * 16px);
+    font-size: math.floor(math.div($ensemble-modal_md__button_font-size, 1rem) * 16px);
 }
     font-size: $ensemble-modal_md__button_font-size;
   }
