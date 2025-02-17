@@ -129,28 +129,28 @@
   display: none !important;
 }
 
-.modal.modal-fx[hidden] {
+.modal.modal-effects[hidden] {
 @if $ensemble_compat {
   display: block !important;
 }
   display: flex !important;
   opacity: 0;
 }
-.modal.modal-fx {
+.modal.modal-effects {
   opacity: 1;
-  transition: $ensemble-modal_fx_container_transition;
+  transition: $ensemble-modal_effects_container_transition;
 @if $ensemble_compat {
-  -webkit-transition: $ensemble-modal_fx_container_transition;
-  -moz-transition: $ensemble-modal_fx_container_transition;
-  -ms-transition: $ensemble-modal_fx_container_transition;
+  -webkit-transition: $ensemble-modal_effects_container_transition;
+  -moz-transition: $ensemble-modal_effects_container_transition;
+  -ms-transition: $ensemble-modal_effects_container_transition;
 }
 }
-.modal.modal-fx .modal-button {
-  transition: $ensemble-modal_fx_button_transition;
+.modal.modal-effects .modal-button {
+  transition: $ensemble-modal_effects_button_transition;
 @if $ensemble_compat {
-  -webkit-transition: $ensemble-modal_fx_button_transition;
-  -moz-transition: $ensemble-modal_fx_button_transition;
-  -ms-transition: $ensemble-modal_fx_button_transition;
+  -webkit-transition: $ensemble-modal_effects_button_transition;
+  -moz-transition: $ensemble-modal_effects_button_transition;
+  -ms-transition: $ensemble-modal_effects_button_transition;
 }
 }
 

@@ -14,7 +14,7 @@
  * @exports Modal
  */
 
-import base from '@loltgt/ensemble';
+import base from "@loltgt/ensemble";
 
 
 /**
@@ -26,19 +26,19 @@ import base from '@loltgt/ensemble';
  * @param {Element} [element] A valid Element node to display in the modal dialog
  * @param {object} options Options object
  * @param {string} [options.ns=modal] The namespace for modal
- * @param {string} [options.root=body] The root Element node
- * @param {(string|string[])} [options.className=modal] The component CSS class name
- * @param {boolean} [options.fx=true] Allow effects
+ * @param {string} [options.root=body] A root Element node
+ * @param {string[]} [options.className=modal] The component CSS class name
+ * @param {boolean} [options.effects=true] Allow effects
  * @param {boolean} [options.windowed=false] Allow framing in a window
- * @param {boolean} [options.cloning=true] Allow cloning of passed element(s)
- * @param {boolean} [options.backClose=true] Allow closing on tap or click outside the content area
+ * @param {boolean} [options.clone=true] Allow clone of passed elements
+ * @param {boolean} [options.backdrop=true] Allow close on tap or click from outside the modal
  * @param {boolean} [options.keyboard=true] Allow keyboard navigation
  * @param {object} [options.close] Parameters for close button
- * @param {function} [options.onOpen] onOpen callback, fires when open modal
- * @param {function} [options.onClose] onOpen callback, fires when close modal
- * @param {function} [options.onShow] onShow callback, fires when show modal, after it openes
- * @param {function} [options.onHide] onHide callback, fires when hide modal, before it closes
- * @param {function} [options.onContent] onContent callback, fires when a content will be shown
+ * @param {function} [options.onOpen] onOpen callback, on modal open
+ * @param {function} [options.onClose] onOpen callback, on modal close
+ * @param {function} [options.onShow] onShow callback, on modal show, after openes
+ * @param {function} [options.onHide] onHide callback, on modal hide, before closes
+ * @param {function} [options.onContent] onContent callback, on content shown
  * @todo L10n and a11y
  * @example
  * var modal = new ensemble.Modal(document.getElementById('inline-content'), {windowed: true});
@@ -56,10 +56,10 @@ class Modal extends base {
       ns: 'modal',
       root: 'body',
       className: 'modal',
-      fx: true,
+      effects: true,
       windowed: false,
-      cloning: true,
-      backClose: true,
+      clone: true,
+      backdrop: true,
       keyboard: true,
       close: {
         onclick: this.close,
@@ -86,6 +86,8 @@ class Modal extends base {
 
   /**
    * Constructor method
+   *
+   * @constructs
    */
   constructor() {
     if (! new.target) {
@@ -115,24 +117,24 @@ class Modal extends base {
       }
     });
     //TODO dataset
-    const cnt = this.cnt = this.compo(false, 'content');
+    const frame = this.frame = this.compo(false, 'content');
 
     const close = this.compo('button', ['button', 'close'], opts.close);
 
-    modal.append(cnt);
+    modal.append(frame);
 
     if (opts.windowed) {
       modal.classList.add(opts.ns + '-windowed');
-      cnt.append(close);
+      frame.append(close);
     } else {
       modal.append(close);
     }
-    if (opts.backClose) {
+    if (opts.backdrop) {
       data.onclick = this.backdrop;
     }
 
-    if (opts.fx) {
-      modal.classList.add(opts.ns + '-fx');
+    if (opts.effects) {
+      modal.classList.add(opts.ns + '-effects');
     }
 
     this.root = this.selector(opts.root);
@@ -147,11 +149,12 @@ class Modal extends base {
   populate(target) {
     console.log('populate', target);
 
-    if (! this.element) return;
+    const el = this.element;
+    if (! el) return;
 
-    const content = this.content(this.element);
+    const content = this.content(el);
 
-    this.cnt.append(content);
+    this.frame.append(content);
   }
 
   /**
@@ -174,7 +177,7 @@ class Modal extends base {
     const opts = this.options;
     const wrap = this.compo(false, 'object');
 
-    clone = typeof clone != 'undefined' ? clone : opts.cloning;
+    clone = typeof clone != 'undefined' ? clone : opts.clone;
 
     let inner = clone ? this.cloneNode(node, true) : node;
 
@@ -359,10 +362,10 @@ class Modal extends base {
   keyboard(evt) {
     this.event(evt);
 
-    const kcode = evt.keyCode || 0;
-
-    // Escape
-    if (kcode == 27) this.close(evt);
+    switch (evt.keyCode) {
+      // Close
+      case 27: this.close(evt); break;
+    }
   }
 
 }
