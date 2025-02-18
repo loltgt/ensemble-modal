@@ -110,13 +110,12 @@ class Modal extends base {
     const modal = this.modal.wrap = this.compo('dialog', false, {
       className: typeof opts.className == 'object' ? opts.className.join(' ') : opts.className,
       hidden: true,
-      ariaModal: true,
+      // ariaModal: true,
       // role: 'dialog',
       onclick: function() {
         data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
       }
     });
-    //TODO dataset
     const frame = this.frame = this.compo(false, 'content');
 
     const close = this.compo('button', ['button', 'close'], opts.close);

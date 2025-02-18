@@ -1,4 +1,11 @@
-/*! * loltgt/ensemble.Modal * * @version 0.0.2 * @link https://github.com/loltgt/ensemble-modal * @copyright Copyright (C) Leonardo Laureti * @license MIT License */
+/*!
+ * ensemble Modal
+ * @version 0.0.4
+ * @link https://github.com/loltgt/ensemble-modal
+ * @copyright Copyright (C) Leonardo Laureti
+ * @license MIT License
+ */
+
 .modal, .modal-content, .modal-button {
   margin: 0;
   padding: 0;
@@ -55,9 +62,6 @@
   cursor: pointer;
   user-select: none;
   appearance: none;
-  -webkit-highlight: none;
-  -webkit-user-select: none;
-  -webkit-appearance: none;
   color: rgba(255, 255, 255, 0.92);
   background: rgba(0, 0, 0, 0);
 }
@@ -69,7 +73,7 @@
 }
 
 .modal-button:active, .modal-button:focus {
-  color: white;
+  color: rgb(255, 255, 255);
   background: rgba(0, 0, 0, 0.7);
   outline: 0;
   -webkit-tap-highlight-color: transparent;
@@ -77,13 +81,13 @@
 
 @media (hover: hover) {
   .modal-button:hover {
-    color: white;
+    color: rgb(255, 255, 255);
     background: rgba(0, 0, 0, 0.7);
   }
 }
 .modal-close {
   top: 0;
-  right: 0;
+  inset-inline: auto 0;
 }
 
 .modal[hidden],
@@ -91,17 +95,17 @@
   display: none !important;
 }
 
-.modal.modal-fx[hidden] {
+.modal.modal-effects[hidden] {
   display: flex !important;
   opacity: 0;
 }
 
-.modal.modal-fx {
+.modal.modal-effects {
   opacity: 1;
   transition: opacity 70ms linear;
 }
 
-.modal.modal-fx .modal-button {
+.modal.modal-effects .modal-button {
   transition: all 30ms linear;
 }
 

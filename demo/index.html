@@ -9,15 +9,19 @@
 </head>
 <body>
 <main>
-<h1>ensemble Modal demo</h1>
+  <h1>ensemble Modal demo</h1>
 
-<section>
-<h2>ensemble.Modal</h2>
+  <section>
+    <h2>ensemble.Modal</h2>
 
-<span class="content">Show this content in a modal.</span>
+    <h3>Modal with inline content</h3>
 
-<button id="button-modal">Open modal</button>
-</section>
+    <span class="content">Show this content in a modal.</span>
+
+    <div>
+      <button id="button-modal">Open modal</button>
+    </div>
+  </section>
 </main>
 
 <!-- <script src="../../ensemble/src/js/Compo.js"></script> -->
@@ -26,12 +30,15 @@
 <!-- <script src="../../ensemble/src/js/base.js"></script> -->
 <!-- <script src="../../ensemble-modal/src/js/Modal.js"></script> -->
 <script src="../../ensemble-modal/dist/js/ensemble-modal.min.js"></script>
-<script>
-const element = document.querySelector('.content');
 
-const modal = new ensemble.Modal(element, {});
-const button = document.getElementById('button-modal');
-button.addEventListener('click', modal.open, true);
+<!-- example: Modal with inline content -->
+<script>
+  var element = document.querySelector('.content');
+
+  var modal = new ensemble.Modal(element, {});
+  var button = document.getElementById('button-modal');
+  button.addEventListener('click', modal.open, true);
 </script>
+
 </body>
 </html>
