@@ -51,7 +51,7 @@ class Modal extends base {
    *
    * @returns {object}
    */
-  _defaults() {
+  defaults() {
     return {
       ns: 'modal',
       root: 'body',
@@ -77,11 +77,11 @@ class Modal extends base {
   /**
    * Methods binding
    */
-  _bindings() {
-    this.open = this.binds(this.open);
-    this.close = this.binds(this.close);
-    this.backdrop = this.binds(this.backdrop);
-    this.keyboard = this.binds(this.keyboard);
+  binds() {
+    this.open = this.wrap(this.open);
+    this.close = this.wrap(this.close);
+    this.backdrop = this.wrap(this.backdrop);
+    this.keyboard = this.wrap(this.keyboard);
   }
 
   /**
@@ -107,8 +107,8 @@ class Modal extends base {
       onclick: false
     });
 
-    const modal = this.modal.wrap = this.compo('dialog', false, {
-      className: typeof opts.className == 'object' ? opts.className.join(' ') : opts.className,
+    const modal = this.modal.$ = this.compo('dialog', false, {
+      className: typeof opts.className == 'object' ? Object.values(opts.className).join(' ') : opts.className,
       hidden: true,
       // ariaModal: true,
       // role: 'dialog',
@@ -116,15 +116,15 @@ class Modal extends base {
         data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
       }
     });
-    const frame = this.frame = this.compo(false, 'content');
+    const stage = this.stage = this.compo(false, 'content');
 
     const close = this.compo('button', ['button', 'close'], opts.close);
 
-    modal.append(frame);
+    modal.append(stage);
 
     if (opts.windowed) {
       modal.classList.add(opts.ns + '-windowed');
-      frame.append(close);
+      stage.append(close);
     } else {
       modal.append(close);
     }
@@ -153,7 +153,7 @@ class Modal extends base {
 
     const content = this.content(el);
 
-    this.frame.append(content);
+    this.stage.append(content);
   }
 
   /**
@@ -170,23 +170,23 @@ class Modal extends base {
    *
    * @param {Element} node A valid Element node
    * @param {boolean} clone Clones Element nodes
-   * @returns {Element} wrap The wrapped (cloned) Element node
+   * @returns {Element} compo A compo wrapped Element
    */
   content(node, clone) {
     const opts = this.options;
-    const wrap = this.compo(false, 'object');
+    const compo = this.compo(false, 'object');
 
     clone = typeof clone != 'undefined' ? clone : opts.clone;
 
     let inner = clone ? this.cloneNode(node, true) : node;
 
-    opts.onContent.call(this, this, wrap, inner);
+    opts.onContent.call(this, this, compo, inner);
 
     if (inner) {
-      wrap.fill(inner);
+      compo.fill(inner);
     }
 
-    return wrap;
+    return compo;
   }
 
   /**
@@ -194,7 +194,7 @@ class Modal extends base {
    */
   destroy() {
     const root = this.root;
-    const modal = this.modal.wrap;
+    const modal = this.modal.$;
 
     this.removeNode(root, modal);
     this.built = false;
@@ -264,9 +264,9 @@ class Modal extends base {
     const opts = this.options;
     const root = this.root;
     const data = this.modal;
-    const modal = this.modal.wrap;
+    const modal = this.modal.$;
 
-    modal.bound(root);
+    modal.bind(root);
 
     this.delay(function() {
       modal.show();
@@ -284,12 +284,12 @@ class Modal extends base {
     const opts = this.options;
     const root = this.root;
     const data = this.modal;
-    const modal = this.modal.wrap;
+    const modal = this.modal.$;
 
     modal.hide();
 
     this.delay(function() {
-      modal.unbound(root);
+      modal.unbind(root);
 
       opts.onHide.call(self, self, target);
     }, modal, 3e2);
