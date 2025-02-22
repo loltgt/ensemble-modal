@@ -90,10 +90,6 @@ class Modal extends base {
    * @constructs
    */
   constructor() {
-    if (! new.target) {
-      throw 'Bad invocation. Must be called with `new`.';
-    }
-
     super(...arguments);
   }
 
