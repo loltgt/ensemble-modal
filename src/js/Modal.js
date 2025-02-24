@@ -28,12 +28,13 @@ import base from "@loltgt/ensemble";
  * @param {string} [options.ns=modal] The namespace for modal
  * @param {string} [options.root=body] A root Element node
  * @param {string[]} [options.className=modal] The component CSS class name
+ * @param {boolean} [options.dialog=false] Allow dialog mode
  * @param {boolean} [options.effects=true] Allow effects
- * @param {boolean} [options.windowed=false] Allow framing in a window
  * @param {boolean} [options.clone=true] Allow clone of passed elements
  * @param {boolean} [options.backdrop=true] Allow close on tap or click from outside the modal
  * @param {boolean} [options.keyboard=true] Allow keyboard navigation
  * @param {object} [options.close] Parameters for close button
+ * @param {object} [options.locale] Localization strings
  * @param {function} [options.onOpen] onOpen callback, on modal open
  * @param {function} [options.onClose] onOpen callback, on modal close
  * @param {function} [options.onShow] onShow callback, on modal show, after openes
@@ -41,7 +42,7 @@ import base from "@loltgt/ensemble";
  * @param {function} [options.onContent] onContent callback, on content shown
  * @todo L10n and a11y
  * @example
- * var modal = new ensemble.Modal(document.getElementById('inline-content'), {windowed: true});
+ * var modal = new ensemble.Modal(document.getElementById('inline-content'), {dialog: true});
  * modal.open();
  */
 class Modal extends base {
@@ -57,20 +58,22 @@ class Modal extends base {
       root: 'body',
       className: 'modal',
       effects: true,
-      windowed: false,
+      dialog: false,
       clone: true,
       backdrop: true,
       keyboard: true,
       close: {
         onclick: this.close,
-        innerText: '\u00D7',
-        ariaLabel: 'Close'
+        innerText: '\u00D7'
       },
-      onOpen: function() {},
-      onClose: function() {},
-      onShow: function() {},
-      onHide: function() {},
-      onContent: function() {}
+      locale: {
+        close: 'Close'
+      },
+      onOpen: () => {},
+      onClose: () => {},
+      onShow: () => {},
+      onHide: () => {},
+      onContent: () => {}
     };
   }
 
@@ -116,10 +119,13 @@ class Modal extends base {
 
     const close = this.compo('button', ['button', 'close'], opts.close);
 
+    const {locale} = opts;
+    close.ariaLabel = locale.close.toString();
+
     modal.append(stage);
 
-    if (opts.windowed) {
-      modal.classList.add(opts.ns + '-windowed');
+    if (opts.dialog) {
+      modal.classList.add(opts.ns + '-dialog');
       stage.append(close);
     } else {
       modal.append(close);
@@ -142,9 +148,9 @@ class Modal extends base {
    * @param {Element} target The element is invoking
    */
   populate(target) {
-    console.log('populate', target);
+    console.log('populate', this, target);
 
-    const el = this.element;
+    const {element: el} = this;
     if (! el) return;
 
     const content = this.content(el);
@@ -158,7 +164,7 @@ class Modal extends base {
    * @param {Element} target The element is invoking
    */
   resume(target) {
-    console.log('resume', target);
+    console.log('resume', this, target);
   }
 
   /**
@@ -169,11 +175,11 @@ class Modal extends base {
    * @returns {Element} compo A compo wrapped Element
    */
   content(node, clone) {
-    const opts = this.options;
+    const {options: opts} = this;
     const compo = this.compo(false, 'object');
 
+    //TODO undefined arg
     clone = typeof clone != 'undefined' ? clone : opts.clone;
-
     let inner = clone ? this.cloneNode(node, true) : node;
 
     opts.onContent.call(this, this, compo, inner);
@@ -189,7 +195,7 @@ class Modal extends base {
    * Destroys the modal
    */
   destroy() {
-    const root = this.root;
+    const {root} = this;
     const modal = this.modal.$;
 
     this.removeNode(root, modal);
@@ -207,7 +213,7 @@ class Modal extends base {
 
     if (this.opened) return;
 
-    const opts = this.options;
+    const {options: opts} = this;
 
     if (this.built) {
       this.resume(target);
@@ -224,7 +230,7 @@ class Modal extends base {
       this.event('keydown').add(this.keyboard);
     }
 
-    console.log('open', this);
+    console.log('open', this, target);
   }
 
   /**
@@ -238,7 +244,7 @@ class Modal extends base {
 
     if (! this.opened) return;
 
-    const opts = this.options;
+    const {options: opts} = this;
 
     this.opened = false;
     opts.onClose.call(this, this, target, evt);
@@ -248,7 +254,7 @@ class Modal extends base {
       this.event('keydown').remove(this.keyboard);
     }
 
-    console.log('close', this);
+    console.log('close', this, target);
   }
 
   /**
@@ -257,14 +263,13 @@ class Modal extends base {
    * @param {Element} target The element is invoking
    */
   show(target) {
-    const opts = this.options;
-    const root = this.root;
-    const data = this.modal;
+    const {options: opts, root} = this;
     const modal = this.modal.$;
+    const self = this;
 
     modal.bind(root);
 
-    this.delay(function() {
+    this.delay(() => {
       modal.show();
 
       opts.onShow.call(self, self, target);
@@ -277,14 +282,13 @@ class Modal extends base {
    * @param {Element} target The element is invoking
    */
   hide(target) {
-    const opts = this.options;
-    const root = this.root;
-    const data = this.modal;
+    const {options: opts, root} = this;
     const modal = this.modal.$;
+    const self = this;
 
     modal.hide();
 
-    this.delay(function() {
+    this.delay(() => {
       modal.unbind(root);
 
       opts.onHide.call(self, self, target);
@@ -308,7 +312,7 @@ class Modal extends base {
     regex = new RegExp(ns + '-content');
 
     if (regex.test(target.className) || regex.test(parent.className)) {
-      console.log('backdrop', 'overflow', 'close', parent, target);
+      console.log('backdrop', 'close', this, target, parent);
 
       this.close(evt);
     }
@@ -316,11 +320,11 @@ class Modal extends base {
     regex = new RegExp(ns + '-object');
 
     if (! regex.test(target.className)) {
-      console.log('backdrop', 'overflow', 'return', parent, target);
+      console.log('backdrop', 'return', this, target, parent);
 
       return;
     }
-
+  
     const inner = target.firstElementChild;
     const inner_w = inner.offsetWidth;
     const inner_h = inner.offsetHeight;
@@ -343,7 +347,7 @@ class Modal extends base {
       (y > target_t || x > target_l || x < target_w || y < target_h) &&
       (y < crop_t || x > crop_r || y > crop_b || x < crop_l)
     ) {
-      console.log('backdrop', 'overflow', 'close', parent, target);
+      console.log('backdrop', 'close', this, target, parent);
 
       this.close(evt);
     }

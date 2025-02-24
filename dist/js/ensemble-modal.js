@@ -138,7 +138,7 @@
     constructor(ns, tag, name, props, options, elementNS) {
       super();
 
-      const ns0 = this.ns = '_' + ns;
+      const ns0 = this.ns = `_${ns}`;
       const tagName = tag ? tag.toString() : 'div';
 
       if (RegExp(REJECTED_TAGS, 'i').test(tagName)) {
@@ -147,7 +147,7 @@
 
       const el = this[ns0] = this.element(ns, tagName, name, props, options, elementNS);
 
-      this.__Compo = true;
+      this.__Compo = 1;
       this[ns0]._1 = this;
 
       if (props && typeof props == 'object') {
@@ -157,7 +157,7 @@
           if (RegExp(DENIED_PROPS).test(p)) {
             throw new Error(l10n.EPROP);
           }
-         
+
           if (p.indexOf('on') === 0 && props[p] && typeof props[p] == 'function') {
             el[p] = props[p].bind(this);
           } else if (typeof props[p] != 'object') {
@@ -165,10 +165,7 @@
           } else if (p == 'children') {
             if (typeof props[p] == 'object' && props[p].length) {
               for (const child of props.children) {
-                const tag = child.tag;
-                const name = child.name;
-                const props = child.props;
-
+                const {tag, name, props} = child;
                 this.append(new Compo(ns, tag, name, props));
               }
             }
@@ -182,13 +179,13 @@
         el.className = '';
 
         if (typeof name == 'string') {
-          el.className = ns + '-' + name;
+          el.className = `${ns}-${name}`;
         } else if (typeof name == 'object') {
-          el.className = Object.values(name).map(a => (ns + '-' + a)).join(' ');
+          el.className = Object.values(name).map(a => `${ns}-${a}`).join(' ');
         }
 
         if (nodeClass) {
-          el.className += ' ' + nodeClass;
+          el.className += ` ${nodeClass}`;
         }
       }
 
@@ -197,7 +194,7 @@
 
     
     element(ns, tag, name, props, options, elementNS) {
-      if (elementNS) return document.createElementNS(tag, [...elementNS, ...options]);
+      if (elementNS) return document.createElementNS(elementNS, tag, options);
       else return document.createElement(tag, options);
     }
 
@@ -223,7 +220,7 @@
 
     
     getStyle(prop) {
-      return window.getComputedStyle(this[this.ns])[prop];
+      return getComputedStyle(this[this.ns])[prop];
     }
 
     
@@ -256,7 +253,7 @@
     
     get parent() {
       const el = this[this.ns];
-      return el.parentElement && '_1' in el.parentElement ? el.parentElement._1 : null;
+      return el.parentElement && el.parentElement._1 ? el.parentElement._1 : null;
     }
 
     
@@ -296,16 +293,15 @@
         Object.assign(this, {}, obj);
       }
 
-      const ns0 = this.ns = '_' + ns;
+      const ns0 = this.ns = `_${ns}`;
 
-      this.__Data = false;
+      this.__Data = 0;
       this[ns0] = {ns};
     }
 
     
     compo(tag, name, props, defer = false, load = false, unload = false) {
       const ns = this[this.ns].ns;
-
       let compo;
 
       if (defer) {
@@ -373,11 +369,11 @@
 
     
     constructor(ns, name, node) {
-      const ns0 = this.ns = '_' + ns;
+      const ns0 = this.ns = `_${ns}`;
 
       node = (Compo.isCompo(node) ? node[ns] : node) || document;
 
-      this.__Event = false;
+      this.__Event = 0;
       this[ns0] = {name, node};
     }
 
@@ -422,7 +418,7 @@
         element = args[0];
         options = args[1];
      
-      } else if ('nodeType' in args[0] && !! args[0].nodeType) {
+      } else if (typeof args[0] == 'object' && args[0].nodeType) {
         element = args[0];
       } else {
         options = args[0];
@@ -532,7 +528,7 @@
 
     
     styleTime(node, prop) {
-      let time = Compo.isCompo(node) ? node.getStyle(prop) : window.getComputedStyle(node)[prop];
+      let time = Compo.isCompo(node) ? node.getStyle(prop) : getComputedStyle(node)[prop];
 
       if (time) {
         time = time.indexOf('s') ? (parseFloat(time) * 1e3) : parseInt(time);
@@ -575,20 +571,22 @@
         root: 'body',
         className: 'modal',
         effects: true,
-        windowed: false,
+        dialog: false,
         clone: true,
         backdrop: true,
         keyboard: true,
         close: {
           onclick: this.close,
-          innerText: '\u00D7',
-          ariaLabel: 'Close'
+          innerText: '\u00D7'
         },
-        onOpen: function() {},
-        onClose: function() {},
-        onShow: function() {},
-        onHide: function() {},
-        onContent: function() {}
+        locale: {
+          close: 'Close'
+        },
+        onOpen: () => {},
+        onClose: () => {},
+        onShow: () => {},
+        onHide: () => {},
+        onContent: () => {}
       };
     }
 
@@ -626,10 +624,13 @@
 
       const close = this.compo('button', ['button', 'close'], opts.close);
 
+      const {locale} = opts;
+      close.ariaLabel = locale.close.toString();
+
       modal.append(stage);
 
-      if (opts.windowed) {
-        modal.classList.add(opts.ns + '-windowed');
+      if (opts.dialog) {
+        modal.classList.add(opts.ns + '-dialog');
         stage.append(close);
       } else {
         modal.append(close);
@@ -648,9 +649,9 @@
 
     
     populate(target) {
-      console.log('populate', target);
+      console.log('populate', this, target);
 
-      const el = this.element;
+      const {element: el} = this;
       if (! el) return;
 
       const content = this.content(el);
@@ -660,16 +661,16 @@
 
     
     resume(target) {
-      console.log('resume', target);
+      console.log('resume', this, target);
     }
 
     
     content(node, clone) {
-      const opts = this.options;
+      const {options: opts} = this;
       const compo = this.compo(false, 'object');
 
+     
       clone = typeof clone != 'undefined' ? clone : opts.clone;
-
       let inner = clone ? this.cloneNode(node, true) : node;
 
       opts.onContent.call(this, this, compo, inner);
@@ -683,7 +684,7 @@
 
     
     destroy() {
-      const root = this.root;
+      const {root} = this;
       const modal = this.modal.$;
 
       this.removeNode(root, modal);
@@ -696,7 +697,7 @@
 
       if (this.opened) return;
 
-      const opts = this.options;
+      const {options: opts} = this;
 
       if (this.built) {
         this.resume(target);
@@ -713,7 +714,7 @@
         this.event('keydown').add(this.keyboard);
       }
 
-      console.log('open', this);
+      console.log('open', this, target);
     }
 
     
@@ -722,7 +723,7 @@
 
       if (! this.opened) return;
 
-      const opts = this.options;
+      const {options: opts} = this;
 
       this.opened = false;
       opts.onClose.call(this, this, target, evt);
@@ -732,19 +733,18 @@
         this.event('keydown').remove(this.keyboard);
       }
 
-      console.log('close', this);
+      console.log('close', this, target);
     }
 
     
     show(target) {
-      const opts = this.options;
-      const root = this.root;
-      this.modal;
+      const {options: opts, root} = this;
       const modal = this.modal.$;
+      const self = this;
 
       modal.bind(root);
 
-      this.delay(function() {
+      this.delay(() => {
         modal.show();
 
         opts.onShow.call(self, self, target);
@@ -753,14 +753,13 @@
 
     
     hide(target) {
-      const opts = this.options;
-      const root = this.root;
-      this.modal;
+      const {options: opts, root} = this;
       const modal = this.modal.$;
+      const self = this;
 
       modal.hide();
 
-      this.delay(function() {
+      this.delay(() => {
         modal.unbind(root);
 
         opts.onHide.call(self, self, target);
@@ -780,7 +779,7 @@
       regex = new RegExp(ns + '-content');
 
       if (regex.test(target.className) || regex.test(parent.className)) {
-        console.log('backdrop', 'overflow', 'close', parent, target);
+        console.log('backdrop', 'close', this, target, parent);
 
         this.close(evt);
       }
@@ -788,11 +787,11 @@
       regex = new RegExp(ns + '-object');
 
       if (! regex.test(target.className)) {
-        console.log('backdrop', 'overflow', 'return', parent, target);
+        console.log('backdrop', 'return', this, target, parent);
 
         return;
       }
-
+    
       const inner = target.firstElementChild;
       const inner_w = inner.offsetWidth;
       const inner_h = inner.offsetHeight;
@@ -815,7 +814,7 @@
         (y > target_t || x > target_l || x < target_w || y < target_h) &&
         (y < crop_t || x > crop_r || y > crop_b || x < crop_l)
       ) {
-        console.log('backdrop', 'overflow', 'close', parent, target);
+        console.log('backdrop', 'close', this, target, parent);
 
         this.close(evt);
       }
