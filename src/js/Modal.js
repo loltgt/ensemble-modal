@@ -31,7 +31,7 @@ import base from "@loltgt/ensemble";
  * @param {boolean} [options.dialog=false] Allow dialog mode
  * @param {boolean} [options.effects=true] Allow effects
  * @param {boolean} [options.clone=true] Allow clone of passed elements
- * @param {boolean} [options.backdrop=true] Allow close on tap or click from outside the modal
+ * @param {boolean} [options.backdrop=true] Allow backdrop, close on tap or click from outside the modal
  * @param {boolean} [options.keyboard=true] Allow keyboard navigation
  * @param {object} [options.close] Parameters for close button
  * @param {object} [options.locale] Localization strings
@@ -40,7 +40,6 @@ import base from "@loltgt/ensemble";
  * @param {function} [options.onShow] onShow callback, on modal show, after openes
  * @param {function} [options.onHide] onHide callback, on modal hide, before closes
  * @param {function} [options.onContent] onContent callback, on content shown
- * @todo L10n and a11y
  * @example
  * var modal = new ensemble.Modal(document.getElementById('inline-content'), {dialog: true});
  * modal.open();
@@ -120,7 +119,7 @@ class Modal extends base {
     const close = this.compo('button', ['button', 'close'], opts.close);
 
     const {locale} = opts;
-    close.ariaLabel = locale.close.toString();
+    close.ariaLabel = locale.close;
 
     modal.append(stage);
 
@@ -178,8 +177,7 @@ class Modal extends base {
     const {options: opts} = this;
     const compo = this.compo(false, 'object');
 
-    //TODO undefined arg
-    clone = typeof clone != 'undefined' ? clone : opts.clone;
+    clone = clone ?? opts.clone;
     let inner = clone ? this.cloneNode(node, true) : node;
 
     opts.onContent.call(this, this, compo, inner);
@@ -209,7 +207,7 @@ class Modal extends base {
    * @param {Element} target The element is invoking
    */
   open(evt, target) {
-    this.event(evt);
+    this.event().prevent(evt);
 
     if (this.opened) return;
 
@@ -229,6 +227,8 @@ class Modal extends base {
     if (opts.keyboard) {
       this.event('keydown').add(this.keyboard);
     }
+  
+    this.event().blur(evt);
 
     console.log('open', this, target);
   }
@@ -240,7 +240,7 @@ class Modal extends base {
    * @param {Element} target The element is invoking
    */
   close(evt, target) {
-    this.event(evt);
+    this.event().prevent(evt);
 
     if (! this.opened) return;
 
@@ -253,6 +253,8 @@ class Modal extends base {
     if (opts.keyboard) {
       this.event('keydown').remove(this.keyboard);
     }
+  
+    this.event().blur(evt);
 
     console.log('close', this, target);
   }
@@ -301,7 +303,7 @@ class Modal extends base {
    * @param {Event} evt An Event
    */
   backdrop(evt) {
-    this.event(evt);
+    this.event().prevent(evt);
 
     const target = evt.target;
     const parent = target.parentElement;
@@ -359,7 +361,7 @@ class Modal extends base {
    * @param {Event} evt An Event
    */
   keyboard(evt) {
-    this.event(evt);
+    this.event().prevent(evt);
 
     switch (evt.keyCode) {
       // Close
