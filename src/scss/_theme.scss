@@ -34,9 +34,15 @@ $ensemble-modal_effects_button_transition: all 30ms linear !default;
 
 // Responsive
 
-// 576 – xs
-$ensemble-modal_xs__button_font-size: 3rem !default;
+// xs: 0       (extra-small 480)
+// sm: 576px   (small 640)
+// md: 768px   (medium 800)
+// lg: 992px   (large 1024)
+// xl: 1200px  (extra-large 1280)
 
-// 992 – md
-$ensemble-modal_md__button_font-size: 3rem !default;
+// sm (small 640)
+$ensemble-modal_sm__button_font-size: 3rem !default;
+
+// lg (large 1024)
+$ensemble-modal_lg__button_font-size: 3rem !default;
 

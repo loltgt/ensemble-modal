@@ -7,8 +7,6 @@
  * @license MIT License
  */
 
-@use "sass:math";
-
 %ensemble-modal_css_reset {
   margin: 0;
   padding: 0;
@@ -33,9 +31,6 @@
 }
   display: flex;
   flex-direction: column;
-@if $ensemble_compat {
-  font-size: 16px;
-}
   font-size: 1rem;
   font-weight: normal;
   text-align: center;
@@ -71,17 +66,12 @@
   transform: translate(-50%, -50%);
 @if $ensemble_compat {
   -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
 }
 }
 
 .modal-button {
   position: absolute;
   width: auto;
-@if $ensemble_compat {
-  font-size: math.floor(math.div($ensemble-modal_button_font-size, 1rem) * 16px);
-}
   padding: $ensemble-modal_button_padding;
   font-size: $ensemble-modal_button_font-size;
   line-height: 1;
@@ -141,34 +131,26 @@
   transition: $ensemble-modal_effects_container_transition;
 @if $ensemble_compat {
   -webkit-transition: $ensemble-modal_effects_container_transition;
-  -moz-transition: $ensemble-modal_effects_container_transition;
-  -ms-transition: $ensemble-modal_effects_container_transition;
 }
 }
 .modal.modal-effects .modal-button {
   transition: $ensemble-modal_effects_button_transition;
 @if $ensemble_compat {
   -webkit-transition: $ensemble-modal_effects_button_transition;
-  -moz-transition: $ensemble-modal_effects_button_transition;
-  -ms-transition: $ensemble-modal_effects_button_transition;
 }
 }
 
 
+// breakpoint: sm (small 640)
 @media (min-width: 576px) {
   .modal-button {
-@if $ensemble_compat {
-    font-size: math.floor(math.div($ensemble-modal_xs__button_font-size, 1rem) * 16px);
-}
-    font-size: $ensemble-modal_xs__button_font-size;
+    font-size: $ensemble-modal_sm__button_font-size;
   }
 }
 
+// breakpoint: lg (large 1024)
 @media (min-width: 992px) {
   .modal-button {
-@if $ensemble_compat {
-    font-size: math.floor(math.div($ensemble-modal_md__button_font-size, 1rem) * 16px);
-}
-    font-size: $ensemble-modal_md__button_font-size;
+    font-size: $ensemble-modal_lg__button_font-size;
   }
 }
