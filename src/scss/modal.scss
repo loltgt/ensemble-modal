@@ -7,18 +7,10 @@
  * @license MIT License
  */
 
-%ensemble-modal_css_reset {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+@use "sass:string";
 
 @import "theme";
 
-
-.modal, .modal-content, .modal-button {
-  @extend %ensemble-modal_css_reset;
-}
 
 .modal {
   position: fixed;
@@ -31,14 +23,21 @@
 }
   display: flex;
   flex-direction: column;
-  font-size: 1rem;
+  font-size: $ensemble-modal_compound_size;
   font-weight: normal;
+  line-height: $ensemble-modal_compound_line-height;
   text-align: center;
   border: 0;
   z-index: $ensemble-modal_zindex;
   overflow: hidden;
-  color: $ensemble-modal_foreground;
+  color: $ensemble-modal_color;
   background: $ensemble-modal_background;
+
+  &, * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 }
 
 .modal-content {
@@ -73,18 +72,23 @@
   position: absolute;
   width: auto;
   padding: $ensemble-modal_button_padding;
-  font-size: $ensemble-modal_button_font-size;
+  font-family: $ensemble-modal_button_font-family;
+  font-size: $ensemble-modal_button_size;
+  font-weight: $ensemble-modal_button_font-weight;
   line-height: 1;
   border: $ensemble-modal_button_border;
   cursor: pointer;
-  user-select: none;
   appearance: none;
 @if $ensemble_compat {
-  -webkit-user-select: none;
   -webkit-appearance: none;
 }
-  color: $ensemble-modal_button_foreground;
+  color: $ensemble-modal_button_color;
   background: $ensemble-modal_button_background;
+
+  svg {
+    width: $ensemble-modal_button_size;
+    height: $ensemble-modal_button_size;
+  }
 }
 .modal-button:disabled {
   background: $ensemble-modal_button_disabled_background;
@@ -92,14 +96,14 @@
   cursor: default;
 }
 .modal-button:active, .modal-button:focus {
-  color: $ensemble-modal_button_focus_foreground;
+  color: $ensemble-modal_button_focus_color;
   background: $ensemble-modal_button_focus_background;
   outline: 0;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: string.unquote("transparent");
 }
 @media (hover:hover) {
   .modal-button:hover {
-    color: $ensemble-modal_button_focus_foreground;
+    color: $ensemble-modal_button_focus_color;
     background: $ensemble-modal_button_focus_background;
   }
 }
@@ -144,13 +148,23 @@
 // breakpoint: sm (small 640)
 @media (min-width: 576px) {
   .modal-button {
-    font-size: $ensemble-modal_sm__button_font-size;
+    font-size: $ensemble-modal_sm__button_size;
+
+    svg {
+      width: $ensemble-modal_sm__button_size;
+      height: $ensemble-modal_sm__button_size;
+    }
   }
 }
 
 // breakpoint: lg (large 1024)
 @media (min-width: 992px) {
   .modal-button {
-    font-size: $ensemble-modal_lg__button_font-size;
+    font-size: $ensemble-modal_lg__button_size;
+
+    svg {
+      width: $ensemble-modal_sm__button_size;
+      height: $ensemble-modal_sm__button_size;
+    }
   }
 }

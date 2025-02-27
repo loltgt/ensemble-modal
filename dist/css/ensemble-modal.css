@@ -6,12 +6,6 @@
  * @license MIT License
  */
 
-.modal, .modal-content, .modal-button {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 .modal {
   position: fixed;
   top: 0;
@@ -22,12 +16,18 @@
   flex-direction: column;
   font-size: 1rem;
   font-weight: normal;
+  line-height: 1.5;
   text-align: center;
   border: 0;
   z-index: 1001;
   overflow: hidden;
   color: #000;
-  background: rgba(100, 100, 100, 0.7);
+  background: rgba(102, 102, 102, 0.71);
+}
+.modal, .modal * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .modal-content {
@@ -56,14 +56,19 @@
   position: absolute;
   width: auto;
   padding: 1rem;
+  font-family: system-ui, sans-serif;
   font-size: 1.5rem;
+  font-weight: normal;
   line-height: 1;
   border: 0;
   cursor: pointer;
-  user-select: none;
   appearance: none;
   color: rgba(255, 255, 255, 0.92);
   background: rgba(0, 0, 0, 0);
+}
+.modal-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .modal-button:disabled {
@@ -113,9 +118,17 @@
   .modal-button {
     font-size: 3rem;
   }
+  .modal-button svg {
+    width: 3rem;
+    height: 3rem;
+  }
 }
 @media (min-width: 992px) {
   .modal-button {
     font-size: 3rem;
+  }
+  .modal-button svg {
+    width: 3rem;
+    height: 3rem;
   }
 }

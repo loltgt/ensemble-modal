@@ -1,11 +1,23 @@
 
+// Compatibility old browsers
+
 $ensemble_compat: false !default;
 
 
-// Container
+// Compound size
 
-$ensemble-modal_foreground: #000 !default;
-$ensemble-modal_background: rgba(100, 100, 100, .7) !default;
+// 1rem (16px)  default to document font-size
+// 1em          1 : relative to parent font-size
+// 1rem         1 : relative to document font-size
+
+$ensemble_modal_compound_size: 1rem !default;
+$ensemble_modal_compound_line-height: 1.5 !default;
+
+
+// Modal box
+
+$ensemble-modal_color: #000 !default;
+$ensemble-modal_background: rgba(102, 102, 102, .71) !default;
 
 $ensemble-modal_zindex: 1001 !default;
 
@@ -13,13 +25,15 @@ $ensemble-modal_zindex: 1001 !default;
 // Button
 
 $ensemble-modal_button_padding: 1rem !default;
-$ensemble-modal_button_font-size: 1.5rem !default;
 $ensemble-modal_button_border: 0 !default;
+$ensemble-modal_button_font-family: system-ui, sans-serif !default;
+$ensemble-modal_button_font-weight: normal !default;
+$ensemble-modal_button_size: 1.5rem !default;
 
-$ensemble-modal_button_foreground: rgba(255, 255, 255, .92) !default;
+$ensemble-modal_button_color: rgba(255, 255, 255, .92) !default;
 $ensemble-modal_button_background: rgba(0, 0, 0, 0) !default;
 
-$ensemble-modal_button_focus_foreground: rgba(255, 255, 255, 1) !default;
+$ensemble-modal_button_focus_color: rgba(255, 255, 255, 1) !default;
 $ensemble-modal_button_focus_background: rgba(0, 0, 0, .7) !default;
 
 $ensemble-modal_button_disabled_background: none !important !default;
@@ -41,8 +55,8 @@ $ensemble-modal_effects_button_transition: all 30ms linear !default;
 // xl: 1200px  (extra-large 1280)
 
 // sm (small 640)
-$ensemble-modal_sm__button_font-size: 3rem !default;
+$ensemble-modal_sm__button_size: 3rem !default;
 
 // lg (large 1024)
-$ensemble-modal_lg__button_font-size: 3rem !default;
+$ensemble-modal_lg__button_size: 3rem !default;
 

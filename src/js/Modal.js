@@ -29,11 +29,18 @@ import base from "@loltgt/ensemble";
  * @param {string} [options.root=body] A root Element node
  * @param {string[]} [options.className=modal] The component CSS class name
  * @param {boolean} [options.dialog=false] Allow dialog mode
+ * @param {object} [options.icons] Set icons model
+ * @param {string} [options.icons.type='text'] Set icons type: text, font, svg, symbol, shape
+ * @param {string} [options.icons.prefix='icon'] Set icons CSS class name prefix, for icons: font
+ * @param {string} [options.icons.src] Set icons SVG symbol href or SVG image hash, for icons: symbol, svg
  * @param {boolean} [options.effects=true] Allow effects
  * @param {boolean} [options.clone=true] Allow clone of passed elements
  * @param {boolean} [options.backdrop=true] Allow backdrop, close on tap or click from outside the modal
  * @param {boolean} [options.keyboard=true] Allow keyboard navigation
  * @param {object} [options.close] Parameters for close button
+ * @param {function} [options.close.trigger] Function trigger, default to self.close
+ * @param {string} [options.close.text] Icon text, for icons: text
+ * @param {string} [options.close.icon] Icon name, symbol href, shape path, URL hash
  * @param {object} [options.locale] Localization strings
  * @param {function} [options.onOpen] onOpen callback, on modal open
  * @param {function} [options.onClose] onOpen callback, on modal close
@@ -56,14 +63,20 @@ class Modal extends base {
       ns: 'modal',
       root: 'body',
       className: 'modal',
+      icons: {
+        type: 'text',
+        prefix: 'icon',
+        src: ''
+      },
       effects: true,
       dialog: false,
       clone: true,
       backdrop: true,
       keyboard: true,
       close: {
-        onclick: this.close,
-        innerText: '\u00D7'
+        trigger: this.close,
+        text: '\u00D7',
+        icon: 'close'
       },
       locale: {
         close: 'Close'
@@ -116,10 +129,20 @@ class Modal extends base {
     });
     const stage = this.stage = this.compo(false, 'content');
 
-    const close = this.compo('button', ['button', 'close'], opts.close);
+    const {close: closeParams, icons, locale} = opts;
+    const close = this.compo('button', ['button', 'close'], {
+      onclick: closeParams.trigger,
+      innerText: icons.type == 'text' ? closeParams.text : '',
+      ariaLabel: locale.close
+    });
 
-    const {locale} = opts;
-    close.ariaLabel = locale.close;
+    if (icons.type != 'text') {
+      const {type, prefix} = icons;
+      const {icon: name, icon: path} = closeParams;
+      const icon = this.icon(type, name, prefix, path);
+
+      close.append(icon);
+    }
 
     modal.append(stage);
 
@@ -149,7 +172,7 @@ class Modal extends base {
   populate(target) {
     console.log('populate', this, target);
 
-    const {element: el} = this;
+    const el = this.element;
     if (! el) return;
 
     const content = this.content(el);
@@ -174,7 +197,7 @@ class Modal extends base {
    * @returns {Element} compo A compo wrapped Element
    */
   content(node, clone) {
-    const {options: opts} = this;
+    const opts = this.options;
     const compo = this.compo(false, 'object');
 
     clone = clone ?? opts.clone;
@@ -190,17 +213,6 @@ class Modal extends base {
   }
 
   /**
-   * Destroys the modal
-   */
-  destroy() {
-    const {root} = this;
-    const modal = this.modal.$;
-
-    this.removeNode(root, modal);
-    this.built = false;
-  }
-
-  /**
    * Opens the modal
    *
    * @param {Event} evt An Event
@@ -211,7 +223,7 @@ class Modal extends base {
 
     if (this.opened) return;
 
-    const {options: opts} = this;
+    const opts = this.options;
 
     if (this.built) {
       this.resume(target);
@@ -244,7 +256,7 @@ class Modal extends base {
 
     if (! this.opened) return;
 
-    const {options: opts} = this;
+    const opts = this.options;
 
     this.opened = false;
     opts.onClose.call(this, this, target, evt);
@@ -327,6 +339,7 @@ class Modal extends base {
       return;
     }
   
+    // [DOM]
     const inner = target.firstElementChild;
     const inner_w = inner.offsetWidth;
     const inner_h = inner.offsetHeight;
