@@ -14,8 +14,14 @@
 
 .modal {
   position: fixed;
+@if $ensemble_compat {
   top: 0;
+  right: 0;
+  bottom: 0;
   left: 0;
+} @else {
+  inset: 0;
+}
   width: 100%;
   height: 100%;
 @if $ensemble_compat {
@@ -23,7 +29,7 @@
 }
   display: flex;
   flex-direction: column;
-  font-size: $ensemble-modal_compound_size;
+  font-size: $ensemble-modal_compound_font-size;
   font-weight: normal;
   line-height: $ensemble-modal_compound_line-height;
   text-align: center;
@@ -88,6 +94,7 @@
   svg {
     width: $ensemble-modal_button_size;
     height: $ensemble-modal_button_size;
+    fill: currentColor;
   }
 }
 .modal-button:disabled {
@@ -132,9 +139,9 @@
 }
 .modal.modal-effects {
   opacity: 1;
-  transition: $ensemble-modal_effects_container_transition;
+  transition: $ensemble-modal_effects_box_transition;
 @if $ensemble_compat {
-  -webkit-transition: $ensemble-modal_effects_container_transition;
+  -webkit-transition: $ensemble-modal_effects_box_transition;
 }
 }
 .modal.modal-effects .modal-button {

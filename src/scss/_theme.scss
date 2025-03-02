@@ -10,7 +10,7 @@ $ensemble_compat: false !default;
 // 1em          1 : relative to parent font-size
 // 1rem         1 : relative to document font-size
 
-$ensemble_modal_compound_size: 1rem !default;
+$ensemble_modal_compound_font-size: 1rem !default;
 $ensemble_modal_compound_line-height: 1.5 !default;
 
 
@@ -42,7 +42,7 @@ $ensemble-modal_button_disabled_opacity: .1 !default;
 
 // Effects
 
-$ensemble-modal_effects_container_transition: opacity 70ms linear !default;
+$ensemble-modal_effects_box_transition: opacity 70ms linear !default;
 $ensemble-modal_effects_button_transition: all 30ms linear !default;
 
 
