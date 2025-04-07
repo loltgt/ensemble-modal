@@ -33,6 +33,7 @@ import base from "@loltgt/ensemble";
  * @param {string} [options.icons.type='text'] Set icons type: text, font, svg, symbol, shape
  * @param {string} [options.icons.prefix='icon'] Set icons CSS class name prefix, for icons: font
  * @param {string} [options.icons.src] Set icons SVG symbol href or SVG image hash, for icons: symbol, svg
+ * @param {string} [options.icons.viewBox] Set icons SVG viewBox
  * @param {boolean} [options.effects=true] Allow effects
  * @param {boolean} [options.clone=true] Allow clone of passed elements
  * @param {boolean} [options.backdrop=true] Allow backdrop, close on tap or click from outside the modal
@@ -41,6 +42,7 @@ import base from "@loltgt/ensemble";
  * @param {function} [options.close.trigger] Function trigger, default to self.close
  * @param {string} [options.close.text] Icon text, for icons: text
  * @param {string} [options.close.icon] Icon name, symbol href, shape path, URL hash
+ * @param {string} [options.close.viewBox] Icon SVG viewBox
  * @param {object} [options.locale] Localization strings
  * @param {function} [options.onOpen] onOpen callback, on modal open
  * @param {function} [options.onClose] onOpen callback, on modal close
@@ -64,9 +66,8 @@ class Modal extends base {
       root: 'body',
       className: 'modal',
       icons: {
-        type: 'text',
-        prefix: 'icon',
-        src: ''
+        type: 'shape',
+        prefix: 'icon'
       },
       effects: true,
       dialog: false,
@@ -75,8 +76,10 @@ class Modal extends base {
       keyboard: true,
       close: {
         trigger: this.close,
-        text: '\u00D7',
-        icon: 'close'
+        //TODO leave text ? viewBox scss
+        // text: '\u00D7',
+        icon: 'm20 4-8 8 8 8-8-8-8 8 8-8-8-8 8 8 8-8Z',
+        viewBox: '0 0 24 24'
       },
       locale: {
         close: 'Close'
@@ -129,17 +132,18 @@ class Modal extends base {
     });
     const stage = this.stage = this.compo(false, 'content');
 
+    const path = 'close';
     const {close: closeParams, icons, locale} = opts;
-    const close = this.compo('button', ['button', 'close'], {
+    const close = this.compo('button', ['button', path], {
       onclick: closeParams.trigger,
       innerText: icons.type == 'text' ? closeParams.text : '',
       ariaLabel: locale.close
     });
 
     if (icons.type != 'text') {
-      const {type, prefix} = icons;
-      const {icon: name, icon: path} = closeParams;
-      const icon = this.icon(type, name, prefix, path);
+      const {type, prefix, src, viewBox} = icons;
+      const {icon: ref, viewBox: v} = closeParams;
+      const icon = this.icon(type, type == 'font' ? ref : path, prefix, src ?? ref, ref ?? path, v ?? viewBox);
 
       close.append(icon);
     }

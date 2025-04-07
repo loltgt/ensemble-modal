@@ -66,9 +66,12 @@
   background: rgba(0, 0, 0, 0);
 }
 .modal-button svg {
+  display: block;
   width: 1.5rem;
   height: 1.5rem;
   fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 2px;
 }
 
 .modal-button:disabled {

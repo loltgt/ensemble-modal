@@ -92,9 +92,12 @@
   background: $ensemble-modal_button_background;
 
   svg {
+    display: block;
     width: $ensemble-modal_button_size;
     height: $ensemble-modal_button_size;
-    fill: currentColor;
+    fill: $ensemble-modal_button_svg_fill;
+    stroke: $ensemble-modal_button_svg_stroke;
+    stroke-width: $ensemble-modal_button_svg_stroke-width;
   }
 }
 .modal-button:disabled {
