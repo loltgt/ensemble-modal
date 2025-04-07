@@ -1,12 +1,13 @@
 {
-  "name": "ensemble-modal-demo",
+  "name": "ensemble-modal--demo",
   "version": "0.0.4",
   "description": "ensemble Modal demo content",
   "scripts": {
-    "demo.css": "npx gulp demo.css",
+    "demo:css": "npx gulp demo:css",
+    "demo:prepublish": "npx gulp demo:prepublish",
     "demo": "npx gulp"
   },
-  "repository": "git+https://github.com/loltgt/ensemble-modal.git",
+  "repository": "git+https://github.com/loltgt/ensemble-modal.git#demo",
   "author": "Leonardo Laureti",
   "license": "MIT",
   "bugs": {
