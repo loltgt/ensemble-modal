@@ -77,7 +77,7 @@
     
     prepend(compo) {
       const ns = this.ns, el = this[ns];
-      return !! el.prependChild(compo[ns]);
+      return !! el.insertBefore(compo[ns], el.firstElementChild || null);
     }
 
     
@@ -493,16 +493,6 @@
     }
 
     
-    appendNode(parent, node) {
-      return !! parent.appendChild(node);
-    }
-
-    
-    prependNode(parent, node) {
-      return !! parent.prependChild(node);
-    }
-
-    
     cloneNode(node, deep = false) {
       return node.cloneNode(deep);
     }
@@ -561,7 +551,7 @@
     }
 
     
-    styleTime(node, prop) {
+    cst(node, prop) {
       let time = Compo.isCompo(node) ? node.getStyle(prop) : getComputedStyle(node)[prop];
 
       if (time) {
@@ -573,7 +563,7 @@
 
     
     delay(func, node, time) {
-      const delay = node ? this.styleTime(node, 'transitionDuration') : 0;
+      const delay = node ? this.cst(node, 'transitionDuration') : 0;
 
       setTimeout(func, delay || time);
     }
@@ -615,8 +605,7 @@
         keyboard: true,
         close: {
           trigger: this.close,
-         
-         
+          text: '\u00D7',
           icon: 'm20 4-8 8 8 8-8-8-8 8 8-8-8-8 8 8 8-8Z',
           viewBox: '0 0 24 24'
         },
@@ -819,10 +808,7 @@
       const target = evt.target;
       const parent = target.parentElement;
       const ns = this.options.ns;
-
-      var regex;
-
-      regex = new RegExp(ns + '-content');
+      let regex = new RegExp(ns + '-content');
 
       if (regex.test(target.className) || regex.test(parent.className)) {
         console.log('backdrop', 'close', this, target, parent);

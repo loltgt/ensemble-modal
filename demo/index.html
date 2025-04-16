@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>ensemble Modal demo</title>
+<meta name="description" content="ensemble.Modal demo page showing the modal component in action: modal inline content">
+<link rel="canonical" href="https://loltgt.github.io/ensemble-modal/demo/">
 <link rel="stylesheet" href="demo-ensemble-modal.css">
 
 <!-- ensemble modal stylesheet -->
@@ -13,11 +15,14 @@
 <main>
   <h1>ensemble Modal demo</h1>
 
+  <p>ensemble Modal is a modal component JavaScript class, based on ensemble from loltgt. This page shows the component in action, a simple modal with inline content.</p>
+  <p>View source from this page to discover options and examples</p>
+
   <section>
-    <h2 class="js-class">ensemble.Modal</h2>
+    <h2 class="js-class"><a href="https://github.com/loltgt/ensemble-modal/blob/main/src/js/Modal.js" target="_blank">ensemble.Modal</a></h2>
 
     <article class="example" id="example-1">
-      <h2>Modal with inline content</h2>
+      <h3>Modal with inline content</h3>
 
       <span class="content">Show this content in a modal.</span>
 
@@ -28,6 +33,10 @@
 
   </section>
 </main>
+<footer>
+  <p>ensemble.Modal is free and licensed under <a href="../LICENSE" target="_blank" onclick="return!(window.origin!='null'&&fetch(this.href).then((r)=>r.blob().then((b)=>window.open(window.URL.createObjectURL(b),'_blank'))))">MIT License</a>.</p>
+  <a class="repo" href="https://github.com/loltgt/ensemble-modal">GitHub repo</a>
+</footer>
 
 <!-- ensemble modal javascript -->
 <script src="../dist/js/ensemble-modal.js"></script>
@@ -35,12 +44,12 @@
 
 <!-- example: Modal with inline content -->
 <script>
-  var element = document.querySelector('#example-1 .content');
+  var element = document.querySelector("#example-1 .content");
 
   var modal = new ensemble.Modal(element);
-  var button = document.getElementById('button-modal');
 
-  button.addEventListener('click', modal.open, true);
+  var button = document.getElementById("button-modal");
+  button.addEventListener("click", modal.open);
 </script>
 
 </body>

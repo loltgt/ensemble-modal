@@ -1,10 +1,8 @@
 # ensemble Modal
 
-ensemble.Modal JavaScript class from loltgt
+ensemble.Modal JavaScript class, based on ensemble from loltgt
 
-This modal dialog supports remote and inline content.
-
-The base for **ensemble Lightbox**.
+This modal dialog component supports JS and inline content.
 
 It comes with options and hooks to customize.
 
@@ -13,21 +11,23 @@ It comes with options and hooks to customize.
 
 Using npm:
 ```shell
-npm install --save-dev github:loltgt/ensemble-modal
+npm install --save-dev loltgt/ensemble-modal
 ```
+
+## Demo
+
+Live demo on this page: [https://loltgt.github.io/ensemble-modal/demo/](https://loltgt.github.io/ensemble-modal/demo/) | source on `demo` branch.
+
+View source from demo page to discover options and examples.
+
 
 ## Usage
 
 Simple usage example:
 ```javascript
-var modal = new ensemble.Modal(
-  document.getElementById('inline-content'),
-  {
-    windowed: true
-  }
-);
+const modal = new ensemble.Modal(document.getElementById("inline-content"));
 
-modal.open();
+document.querySelector("button").addEventListener("click", modal.open);
 ```
 
 ## License
