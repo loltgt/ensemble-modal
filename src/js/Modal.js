@@ -76,8 +76,7 @@ class Modal extends base {
       keyboard: true,
       close: {
         trigger: this.close,
-        //TODO leave text ? viewBox scss
-        // text: '\u00D7',
+        text: '\u00D7',
         icon: 'm20 4-8 8 8 8-8-8-8 8 8-8-8-8 8 8 8-8Z',
         viewBox: '0 0 24 24'
       },
@@ -324,10 +323,7 @@ class Modal extends base {
     const target = evt.target;
     const parent = target.parentElement;
     const ns = this.options.ns;
-
-    var regex;
-
-    regex = new RegExp(ns + '-content');
+    let regex = new RegExp(ns + '-content');
 
     if (regex.test(target.className) || regex.test(parent.className)) {
       console.log('backdrop', 'close', this, target, parent);

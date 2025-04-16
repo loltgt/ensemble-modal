@@ -111,7 +111,7 @@
   outline: 0;
   -webkit-tap-highlight-color: string.unquote("transparent");
 }
-@media (hover:hover) {
+@media (hover: hover) {
   .modal-button:hover {
     color: $ensemble-modal_button_focus_color;
     background: $ensemble-modal_button_focus_background;
@@ -119,11 +119,11 @@
 }
 
 .modal-close {
-  top: 0;
+  top: $ensemble-modal_button_close_position_y;
 @if $ensemble_compat {
-  right: 0;
+  right: $ensemble-modal_button_close_position_x;
 } @else {
-  inset-inline: auto 0;
+  inset-inline: auto $ensemble-modal_button_close_position_x;
 }
 }
 
@@ -173,8 +173,8 @@
     font-size: $ensemble-modal_lg__button_size;
 
     svg {
-      width: $ensemble-modal_sm__button_size;
-      height: $ensemble-modal_sm__button_size;
+      width: $ensemble-modal_lg__button_size;
+      height: $ensemble-modal_lg__button_size;
     }
   }
 }
