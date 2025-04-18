@@ -16,16 +16,16 @@ npm install --save-dev loltgt/ensemble-modal
 
 ## Demo
 
-Live demo on this page: [https://loltgt.github.io/ensemble-modal/demo/](https://loltgt.github.io/ensemble-modal/demo/) | source on `demo` branch.
+Live demo on this page: [https://loltgt.github.io/ensemble-modal/demo/](https://loltgt.github.io/ensemble-modal/demo/)
 
-View source from demo page to discover options and examples.
+View source from `demo` to discover options and examples.
 
 
 ## Usage
 
 Simple usage example:
 ```javascript
-const modal = new ensemble.Modal(document.getElementById("inline-content"));
+const modal = new ensemble.Modal(document.querySelector(".inline-content"));
 
 document.querySelector("button").addEventListener("click", modal.open);
 ```
