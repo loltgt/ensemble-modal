@@ -127,6 +127,7 @@
 
 
 
+ 
   const REJECTED_TAGS = 'html|head|body|meta|link|style|script';
   const DENIED_PROPS ='attributes|classList|innerHTML|outerHTML|nodeName|nodeType';
 
@@ -514,7 +515,6 @@
       const icon = this.compo('span', 'icon', {className});
 
       if (type != 'font') {
-       
         if (type == 'symbol' || type == 'shape') {
           const svgNsUri = 'http://www.w3.org/2000/svg';
           const svg = new Compo(ns, 'svg', false, false, false, svgNsUri);
@@ -576,7 +576,7 @@
         throw new TypeError(l10n.EMETH);
       }
 
-      return function(event) { method.call(self, event, this); }
+      return function() { method.call(self, ...arguments, this); }
     }
 
   }
@@ -644,8 +644,6 @@
       const modal = this.modal.$ = this.compo('dialog', false, {
         className: typeof opts.className == 'object' ? Object.values(opts.className).join(' ') : opts.className,
         hidden: true,
-       
-       
         onclick: function() {
           data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
         }
@@ -775,11 +773,14 @@
     show(target) {
       const {options: opts, root} = this;
       const modal = this.modal.$;
+      const ns = modal.ns, dialog = modal[ns];
       const self = this;
 
       modal.bind(root);
 
       this.delay(() => {
+        dialog.show();
+
         modal.show();
 
         opts.onShow.call(self, self, target);
@@ -790,9 +791,12 @@
     hide(target) {
       const {options: opts, root} = this;
       const modal = this.modal.$;
+      const ns = modal.ns, dialog = modal[ns];
       const self = this;
 
       modal.hide();
+
+      dialog.close();
 
       this.delay(() => {
         modal.unbind(root);

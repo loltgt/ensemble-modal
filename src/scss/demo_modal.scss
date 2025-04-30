@@ -23,3 +23,7 @@
   min-height: 25vh;
 }
 
+.modal :focus-visible {
+  outline: revert;
+}
+
