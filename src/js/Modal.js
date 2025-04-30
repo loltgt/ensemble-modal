@@ -123,8 +123,6 @@ class Modal extends base {
     const modal = this.modal.$ = this.compo('dialog', false, {
       className: typeof opts.className == 'object' ? Object.values(opts.className).join(' ') : opts.className,
       hidden: true,
-      // ariaModal: true,
-      // role: 'dialog',
       onclick: function() {
         data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
       }
@@ -282,11 +280,14 @@ class Modal extends base {
   show(target) {
     const {options: opts, root} = this;
     const modal = this.modal.$;
+    const ns = modal.ns, dialog = modal[ns];
     const self = this;
 
     modal.bind(root);
 
     this.delay(() => {
+      dialog.show(); // [DOM]
+
       modal.show();
 
       opts.onShow.call(self, self, target);
@@ -301,9 +302,12 @@ class Modal extends base {
   hide(target) {
     const {options: opts, root} = this;
     const modal = this.modal.$;
+    const ns = modal.ns, dialog = modal[ns];
     const self = this;
 
     modal.hide();
+
+    dialog.close(); // [DOM]
 
     this.delay(() => {
       modal.unbind(root);

@@ -105,7 +105,7 @@
   opacity: $ensemble-modal_button_disabled_opacity;
   cursor: default;
 }
-.modal-button:active, .modal-button:focus {
+.modal-button:active, .modal-button:focus:not(:focus-visible) {
   color: $ensemble-modal_button_focus_color;
   background: $ensemble-modal_button_focus_background;
   outline: 0;
