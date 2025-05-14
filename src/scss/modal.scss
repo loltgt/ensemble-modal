@@ -24,6 +24,8 @@
 }
   width: 100%;
   height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 @if $ensemble_compat {
   display: block;
 }
@@ -44,34 +46,36 @@
     padding: 0;
     box-sizing: border-box;
   }
+
+  &::backdrop {
+    background: string.unquote("transparent");
+  }
 }
 
-.modal-content {
+.modal-backdrop {
+  background: $ensemble-modal_backdrop_color;
+}
+
+.modal-stage {
   position: relative;
   width: 100%;
   height: 100%;
   margin: auto;
   line-height: 1;
   overflow: hidden;
+
+  .modal-window & {
+    width: $ensemble-modal_window_width;
+    height: $ensemble-modal_window_height;
+    background: $ensemble-modal_window_background;
+  }
 }
 
-.modal-object {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-@if $ensemble_compat {
+.modal-content {
   display: block;
-}
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
   width: 100%;
   height: 100%;
-  transform: translate(-50%, -50%);
-@if $ensemble_compat {
-  -webkit-transform: translate(-50%, -50%);
-}
+  overflow: hidden;
 }
 
 .modal-button {

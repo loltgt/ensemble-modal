@@ -517,8 +517,8 @@
       if (type != 'font') {
         if (type == 'symbol' || type == 'shape') {
           const svgNsUri = 'http://www.w3.org/2000/svg';
-          const svg = new Compo(ns, 'svg', false, false, false, svgNsUri);
-          const node = new Compo(ns, type == 'symbol' ? 'use' : 'path', false, false, false, svgNsUri);
+          const svg = new Compo(ns, 'svg', false, false, null, svgNsUri);
+          const node = new Compo(ns, type == 'symbol' ? 'use' : 'path', false, false, null, svgNsUri);
 
           if (viewBox) {
             svg.setAttr('viewBox', viewBox);
@@ -532,7 +532,7 @@
 
           icon.append(svg);
         } else if (type == 'svg' && this.origin()) {
-          const img = new compo(ns, 'img', false, {
+          const img = this.compo(ns, 'img', false, {
             'src': `${path}#${hash}`
           });
           icon.append(img);
@@ -594,12 +594,14 @@
         ns: 'modal',
         root: 'body',
         className: 'modal',
+        dialog: true,
+        modal: true,
+        window: false,
         icons: {
           type: 'shape',
           prefix: 'icon'
         },
         effects: true,
-        dialog: false,
         clone: true,
         backdrop: true,
         keyboard: true,
@@ -616,7 +618,9 @@
         onClose: () => {},
         onShow: () => {},
         onHide: () => {},
-        onContent: () => {}
+        onContent: () => {},
+        onInit: () => {},
+        onResume: () => {}
       };
     }
 
@@ -634,25 +638,47 @@
     }
 
     
-    generator() {
+    init(target) {
+      const {options: opts, element: el} = this;
+      if (! el) return;
+
+      this.layout();
+
+      const content = this.$ = this.content(el);
+
+      this.stage.append(content);
+
+      
+      opts.onInit.call(this, this, target);
+    }
+
+    
+    resume(target) {
+      
+      opts.onResume.call(this, this, target);
+    }
+
+    
+    layout() {
       const opts = this.options;
 
       const data = this.modal = this.data({
         onclick: false
       });
 
-      const modal = this.modal.$ = this.compo('dialog', false, {
+      const modal = this.modal.$ = this.compo(opts.dialog ? 'dialog' : false, false, {
         className: typeof opts.className == 'object' ? Object.values(opts.className).join(' ') : opts.className,
         hidden: true,
         onclick: function() {
           data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
         }
       });
-      const stage = this.stage = this.compo(false, 'content');
+      const stage = this.stage = this.compo(false, 'stage');
+      const nav = this.nav = this.data(true);
 
       const path = 'close';
       const {close: closeParams, icons, locale} = opts;
-      const close = this.compo('button', ['button', path], {
+      const close = nav[path] = this.compo('button', ['button', path], {
         onclick: closeParams.trigger,
         innerText: icons.type == 'text' ? closeParams.text : '',
         ariaLabel: locale.close
@@ -668,13 +694,14 @@
 
       modal.append(stage);
 
-      if (opts.dialog) {
-        modal.classList.add(opts.ns + '-dialog');
+      if (opts.window) {
+        modal.classList.add(opts.ns + '-window');
         stage.append(close);
       } else {
         modal.append(close);
       }
       if (opts.backdrop) {
+        modal.classList.add(opts.ns + '-backdrop');
         data.onclick = this.backdrop;
       }
 
@@ -687,30 +714,14 @@
     }
 
     
-    populate(target) {
-      console.log('populate', this, target);
-
-      const el = this.element;
-      if (! el) return;
-
-      const content = this.content(el);
-
-      this.stage.append(content);
-    }
-
-    
-    resume(target) {
-      console.log('resume', this, target);
-    }
-
-    
     content(node, clone) {
       const opts = this.options;
-      const compo = this.compo(false, 'object');
+      const compo = this.compo(false, 'content');
 
       clone = clone ?? opts.clone;
       let inner = clone ? this.cloneNode(node, true) : node;
 
+      
       opts.onContent.call(this, this, compo, inner);
 
       if (inner) {
@@ -731,12 +742,14 @@
       if (this.built) {
         this.resume(target);
       } else {
-        this.generator();
-        this.populate(target);
+        this.init(target);
       }
 
       this.opened = true;
+
+      
       opts.onOpen.call(this, this, target, evt);
+
       this.show(target);
 
       if (opts.keyboard) {
@@ -744,8 +757,6 @@
       }
     
       this.event().blur(evt);
-
-      console.log('open', this, target);
     }
 
     
@@ -757,7 +768,10 @@
       const opts = this.options;
 
       this.opened = false;
+
+      
       opts.onClose.call(this, this, target, evt);
+
       this.hide(target);
 
       if (opts.keyboard) {
@@ -765,8 +779,6 @@
       }
     
       this.event().blur(evt);
-
-      console.log('close', this, target);
     }
 
     
@@ -778,11 +790,36 @@
 
       modal.bind(root);
 
+      this.target = target;
+
       this.delay(() => {
-        dialog.show();
+       
+        if (opts.dialog) {
+          try {
+            if (opts.modal)
+              dialog.showModal();
+            else
+              dialog.show();
+
+           
+            dialog.focus();
+          } catch (err) {
+            console.error('show', err.message);
+
+            modal.setAttr('open', '');
+          }
+       
+        } else {
+          const button = this.selector('button', dialog);
+          if (button) {
+            button.focus();
+            button.blur();
+          }
+        }
 
         modal.show();
 
+        
         opts.onShow.call(self, self, target);
       });
     }
@@ -796,11 +833,27 @@
 
       modal.hide();
 
-      dialog.close();
+     
+      if (opts.dialog) {
+        try {
+          dialog.close();
+        } catch (err) {
+          console.error('hide', err.message);
+
+          modal.delAttr('open');
+        }
+     
+      } else if (this.target) {
+        this.target.focus();
+      }
+     
+      const doc = document;
+      doc.hasFocus() && doc.activeElement.blur();
 
       this.delay(() => {
         modal.unbind(root);
 
+        
         opts.onHide.call(self, self, target);
       }, modal, 3e2);
     }
@@ -815,18 +868,13 @@
       let regex = new RegExp(ns + '-content');
 
       if (regex.test(target.className) || regex.test(parent.className)) {
-        console.log('backdrop', 'close', this, target, parent);
-
         this.close(evt);
       }
 
       regex = new RegExp(ns + '-object');
 
-      if (! regex.test(target.className)) {
-        console.log('backdrop', 'return', this, target, parent);
-
+      if (! regex.test(target.className))
         return;
-      }
     
      
       const inner = target.firstElementChild;
@@ -845,25 +893,22 @@
       const crop_b = crop_t + inner_h;
       const crop_r = crop_l + inner_w;
 
-      console.log('backdrop', 'coords', {x, y}, {target_t, target_l, target_w, target_h}, {crop_t, crop_r, crop_b, crop_l});
-
       if (
         (y > target_t || x > target_l || x < target_w || y < target_h) &&
         (y < crop_t || x > crop_r || y > crop_b || x < crop_l)
       ) {
-        console.log('backdrop', 'close', this, target, parent);
-
         this.close(evt);
       }
     }
 
     
     keyboard(evt) {
-      this.event().prevent(evt);
-
       switch (evt.keyCode) {
        
-        case 27: this.close(evt); break;
+        case 27:
+          this.event().prevent(evt);
+          this.close(evt);
+        break;
       }
     }
 
