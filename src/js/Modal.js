@@ -126,7 +126,7 @@ class Modal extends base {
    * @param {Element} target The element is invoking
    */
   init(target) {
-    const {options: opts, element: el} = this;
+    const el = this.element;
     if (! el) return;
 
     this.layout();
@@ -141,7 +141,7 @@ class Modal extends base {
      * @param {object} this
      * @param {Element} target
      */
-    opts.onInit.call(this, this, target);
+    this.options.onInit.call(this, this, target);
   }
 
   /**
@@ -158,7 +158,7 @@ class Modal extends base {
      * @param {object} this
      * @param {Element} target
      */
-    opts.onResume.call(this, this, target);
+    this.options.onResume.call(this, this, target);
   }
 
   /**
@@ -178,6 +178,7 @@ class Modal extends base {
         data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
       }
     });
+    const body = this.modal.body = this.compo(false, 'body');
     const stage = this.stage = this.compo(false, 'stage');
     const nav = this.nav = this.data(true);
 
@@ -194,24 +195,27 @@ class Modal extends base {
       const {icon: ref, viewBox: v} = closeParams;
       const icon = this.icon(type, type == 'font' ? ref : path, prefix, src ?? ref, ref ?? path, v ?? viewBox);
 
+      const svg = icon.first;
+      svg.setAttr('stroke', 'currentColor');
+      svg.setAttr('stroke-width', '2px');
+
       close.append(icon);
     }
 
-    modal.append(stage);
+    body.append(stage);
+    body.append(close);
+    modal.append(body);
 
     if (opts.window) {
-      modal.classList.add(opts.ns + '-window');
-      stage.append(close);
-    } else {
-      modal.append(close);
+      modal.classList.add(`${opts.ns}-window`);
     }
     if (opts.backdrop) {
-      modal.classList.add(opts.ns + '-backdrop');
+      modal.classList.add(`${opts.ns}-backdrop`);
       data.onclick = this.backdrop;
     }
 
     if (opts.effects) {
-      modal.classList.add(opts.ns + '-effects');
+      modal.classList.add(`${opts.ns}-effects`);
     }
 
     this.root = this.selector(opts.root);
@@ -433,41 +437,11 @@ class Modal extends base {
   backdrop(evt) {
     this.event().prevent(evt);
 
+    const opts = this.options;
     const target = evt.target;
-    const parent = target.parentElement;
-    const ns = this.options.ns;
-    let regex = new RegExp(ns + '-content');
+    const regex = new RegExp(`${opts.ns}-backdrop`);
 
-    if (regex.test(target.className) || regex.test(parent.className)) {
-      this.close(evt);
-    }
-
-    regex = new RegExp(ns + '-object');
-
-    if (! regex.test(target.className))
-      return;
-  
-    // [DOM]
-    const inner = target.firstElementChild;
-    const inner_w = inner.offsetWidth;
-    const inner_h = inner.offsetHeight;
-    const target_t = target.offsetTop;
-    const target_l = target.offsetLeft;
-    const target_w = target.offsetWidth;
-    const target_h = target.offsetHeight;
-
-    const x = evt.x;
-    const y = evt.y;
-
-    const crop_t = (target_h - inner_h) / 2;
-    const crop_l = (target_w - inner_w) / 2;
-    const crop_b = crop_t + inner_h;
-    const crop_r = crop_l + inner_w;
-
-    if (
-      (y > target_t || x > target_l || x < target_w || y < target_h) &&
-      (y < crop_t || x > crop_r || y > crop_b || x < crop_l)
-    ) {
+    if (regex.test(target.className) || regex.test(target.parentElement.className)) {
       this.close(evt);
     }
   }
@@ -480,10 +454,7 @@ class Modal extends base {
   keyboard(evt) {
     switch (evt.keyCode) {
       // Close
-      case 27:
-        this.event().prevent(evt);
-        this.close(evt);
-      break;
+      case 27: this.event().prevent(evt), this.close(evt); break;
     }
   }
 

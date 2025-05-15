@@ -29,11 +29,11 @@ $ensemble-modal_zindex: 1001 !default;
 $ensemble-modal_backdrop_color: rgba(102, 102, 102, .71) !default;
 
 
-// Window modal
+// Framed
 
-$ensemble-modal_window_width: calc(100% - 2em - 6px) !default;
-$ensemble-modal_window_height: calc(100% - 2em - 6px) !default;
-$ensemble-modal_window_background: #ccc !default;
+$ensemble-modal_window_width: fit-content !default;
+$ensemble-modal_window_height: fit-content !default;
+$ensemble-modal_window_background: #c1c1c1 !default;
 
 
 // Button
@@ -61,6 +61,10 @@ $ensemble-modal_button_close_position_x: 0 !default;
 $ensemble-modal_button_close_position_y: 0 !default;
 
 
+// Icon
+$ensemble-modal_icon_filter: drop-shadow(0 0 1px #000) !default;
+
+
 // Effects
 
 $ensemble-modal_effects_box_transition: opacity 70ms linear !default;
@@ -78,6 +82,10 @@ $ensemble-modal_effects_button_transition: all 30ms linear !default;
 // sm (small 640)
 $ensemble-modal_sm__button_size: 3rem !default;
 
+$ensemble-modal_sm__icon_filter: $ensemble-modal_icon_filter !default;
+
 // lg (large 1024)
 $ensemble-modal_lg__button_size: 3rem !default;
+
+$ensemble-modal_lg__icon_filter: none !default;
 

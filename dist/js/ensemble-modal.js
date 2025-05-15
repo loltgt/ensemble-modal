@@ -12,30 +12,22 @@
 
 
   
-  class locale {
-
+  const l10n = new Proxy({}, {
     
-    constructor(lang) {
-      if (typeof locale[lang] == 'object') {
-        return locale[lang];
-      } else {
-        return locale[0];
-      }
+    get(self, marker) {
+      return self.lang && self[self.lang][marker] || marker;
     }
-
-    
-    static defaults() {
-      return Object.fromEntries(['ETAGN', 'EPROP', 'EMTAG', 'EOPTS', 'EELEM', 'EMETH', 'DOM'].map(a => [a, a]));
-    }
-  }
-  
-  const l10n = locale.defaults();
+  });
 
   
 
 
 
-  const REJECTED_TAGS$1 = 'html|head|body|meta|link|style|script';
+  
+  const REJECTED_TAGS = 'html|head|body|meta|link|style|script';
+
+  
+  const DENIED_PROPS = 'attributes|classList|innerHTML|outerHTML|nodeName|nodeType';
 
 
   
@@ -88,7 +80,7 @@
 
     
     fill(node) {
-      if (! node instanceof Element || RegExp(REJECTED_TAGS$1, 'i').test(node.tagName) || RegExp(`(<(${REJECTED_TAGS$1})*>)`, 'i').test(node.innerHTML)) {
+      if (! node instanceof Element || RegExp(REJECTED_TAGS, 'i').test(node.tagName) || RegExp(`(<(${REJECTED_TAGS})*>)`, 'i').test(node.innerHTML)) {
         throw new Error(l10n.EMTAG);
       }
 
@@ -125,11 +117,6 @@
 
   
 
-
-
- 
-  const REJECTED_TAGS = 'html|head|body|meta|link|style|script';
-  const DENIED_PROPS ='attributes|classList|innerHTML|outerHTML|nodeName|nodeType';
 
 
   
@@ -518,18 +505,28 @@
         if (type == 'symbol' || type == 'shape') {
           const svgNsUri = 'http://www.w3.org/2000/svg';
           const svg = new Compo(ns, 'svg', false, false, null, svgNsUri);
-          const node = new Compo(ns, type == 'symbol' ? 'use' : 'path', false, false, null, svgNsUri);
+          const tag = type == 'symbol' ? 'use' : 'path';
+          const node = new Compo(ns, tag, false, false, null, svgNsUri);
 
           if (viewBox) {
-            svg.setAttr('viewBox', viewBox);
+            const m = viewBox.match(/\d+ \d+ (\d+) (\d+)/);
+
+            if (m) {
+              Object.entries({
+                width: m[1],
+                height: m[2],
+                viewBox: m[0]
+              }).forEach(a => svg.setAttr(a[0], a[1]));
+            }
           }
-          if (type == 'symbol') {
+
+          if (tag == 'use') {
             node.setAttr('href', `#${hash}`);
           } else {
             node.setAttr('d', path);
           }
-          svg.append(node);
 
+          svg.append(node);
           icon.append(svg);
         } else if (type == 'svg' && this.origin()) {
           const img = this.compo(ns, 'img', false, {
@@ -639,7 +636,7 @@
 
     
     init(target) {
-      const {options: opts, element: el} = this;
+      const el = this.element;
       if (! el) return;
 
       this.layout();
@@ -649,13 +646,13 @@
       this.stage.append(content);
 
       
-      opts.onInit.call(this, this, target);
+      this.options.onInit.call(this, this, target);
     }
 
     
     resume(target) {
       
-      opts.onResume.call(this, this, target);
+      this.options.onResume.call(this, this, target);
     }
 
     
@@ -673,6 +670,7 @@
           data.onclick && typeof data.onclick == 'function' && data.onclick.apply(this, arguments);
         }
       });
+      const body = this.modal.body = this.compo(false, 'body');
       const stage = this.stage = this.compo(false, 'stage');
       const nav = this.nav = this.data(true);
 
@@ -689,24 +687,27 @@
         const {icon: ref, viewBox: v} = closeParams;
         const icon = this.icon(type, type == 'font' ? ref : path, prefix, src ?? ref, ref ?? path, v ?? viewBox);
 
+        const svg = icon.first;
+        svg.setAttr('stroke', 'currentColor');
+        svg.setAttr('stroke-width', '2px');
+
         close.append(icon);
       }
 
-      modal.append(stage);
+      body.append(stage);
+      body.append(close);
+      modal.append(body);
 
       if (opts.window) {
-        modal.classList.add(opts.ns + '-window');
-        stage.append(close);
-      } else {
-        modal.append(close);
+        modal.classList.add(`${opts.ns}-window`);
       }
       if (opts.backdrop) {
-        modal.classList.add(opts.ns + '-backdrop');
+        modal.classList.add(`${opts.ns}-backdrop`);
         data.onclick = this.backdrop;
       }
 
       if (opts.effects) {
-        modal.classList.add(opts.ns + '-effects');
+        modal.classList.add(`${opts.ns}-effects`);
       }
 
       this.root = this.selector(opts.root);
@@ -862,41 +863,11 @@
     backdrop(evt) {
       this.event().prevent(evt);
 
+      const opts = this.options;
       const target = evt.target;
-      const parent = target.parentElement;
-      const ns = this.options.ns;
-      let regex = new RegExp(ns + '-content');
+      const regex = new RegExp(`${opts.ns}-backdrop`);
 
-      if (regex.test(target.className) || regex.test(parent.className)) {
-        this.close(evt);
-      }
-
-      regex = new RegExp(ns + '-object');
-
-      if (! regex.test(target.className))
-        return;
-    
-     
-      const inner = target.firstElementChild;
-      const inner_w = inner.offsetWidth;
-      const inner_h = inner.offsetHeight;
-      const target_t = target.offsetTop;
-      const target_l = target.offsetLeft;
-      const target_w = target.offsetWidth;
-      const target_h = target.offsetHeight;
-
-      const x = evt.x;
-      const y = evt.y;
-
-      const crop_t = (target_h - inner_h) / 2;
-      const crop_l = (target_w - inner_w) / 2;
-      const crop_b = crop_t + inner_h;
-      const crop_r = crop_l + inner_w;
-
-      if (
-        (y > target_t || x > target_l || x < target_w || y < target_h) &&
-        (y < crop_t || x > crop_r || y > crop_b || x < crop_l)
-      ) {
+      if (regex.test(target.className) || regex.test(target.parentElement.className)) {
         this.close(evt);
       }
     }
@@ -905,10 +876,7 @@
     keyboard(evt) {
       switch (evt.keyCode) {
        
-        case 27:
-          this.event().prevent(evt);
-          this.close(evt);
-        break;
+        case 27: this.event().prevent(evt), this.close(evt); break;
       }
     }
 
