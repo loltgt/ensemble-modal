@@ -4,6 +4,8 @@ ensemble.Modal JavaScript class, based on ensemble from loltgt
 
 This modal dialog component supports JS and inline content.
 
+It has built-in HTMLDialogElement.
+
 It comes with options and hooks to customize.
 
 
