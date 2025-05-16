@@ -717,19 +717,19 @@
     
     content(node, clone) {
       const opts = this.options;
-      const compo = this.compo(false, 'content');
+      const content = this.compo(false, 'content');
 
       clone = clone ?? opts.clone;
       let inner = clone ? this.cloneNode(node, true) : node;
 
       
-      opts.onContent.call(this, this, compo, inner);
+      opts.onContent.call(this, this, content, inner);
 
       if (inner) {
-        compo.fill(inner);
+        content.fill(inner);
       }
 
-      return compo;
+      return content;
     }
 
     
@@ -861,8 +861,6 @@
 
     
     backdrop(evt) {
-      this.event().prevent(evt);
-
       const opts = this.options;
       const target = evt.target;
       const regex = new RegExp(`${opts.ns}-backdrop`);
@@ -876,7 +874,7 @@
     keyboard(evt) {
       switch (evt.keyCode) {
        
-        case 27: this.event().prevent(evt), this.close(evt); break;
+        case 27: this.close(evt); break;
       }
     }
 
