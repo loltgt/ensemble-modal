@@ -14,7 +14,7 @@
  * @exports Modal
  */
 
-import base from "@loltgt/ensemble";
+import base from 'ensemble';
 
 
 /**
@@ -24,7 +24,7 @@ import base from "@loltgt/ensemble";
  * @extends base
  * @inheritdoc
  * @param {Element} [element] A valid Element node to display in the modal dialog
- * @param {object} options Options object
+ * @param {object} [options] Options object
  * @param {string} [options.ns=modal] The namespace for modal
  * @param {string} [options.root=body] A root Element node
  * @param {string[]} [options.className=modal] The component CSS class name
@@ -136,10 +136,11 @@ class Modal extends base {
     this.stage.append(content);
 
     /**
+     * options.onInit callback
      * @event #options.onInit
      * @type {function}
-     * @param {object} this
-     * @param {Element} target
+     * @param {object} this This component object
+     * @param {Element} target The element is invoking
      */
     this.options.onInit.call(this, this, target);
   }
@@ -153,10 +154,11 @@ class Modal extends base {
    */
   resume(target) {
     /**
+     * options.onResume callback
      * @event #options.onResume
      * @type {function}
-     * @param {object} this
-     * @param {Element} target
+     * @param {object} this This component object
+     * @param {Element} target The element is invoking
      */
     this.options.onResume.call(this, this, target);
   }
@@ -228,30 +230,31 @@ class Modal extends base {
    * @emits #options.onContent
    *
    * @param {Element} node A valid Element node
-   * @param {boolean} clone Clones Element nodes
-   * @returns {Compo} compo A compo wrapped Element
+   * @param {boolean} clone Clones inner nodes
+   * @returns {Compo} compo Content object
    */
   content(node, clone) {
     const opts = this.options;
-    const compo = this.compo(false, 'content');
+    const content = this.compo(false, 'content');
 
     clone = clone ?? opts.clone;
     let inner = clone ? this.cloneNode(node, true) : node;
 
     /**
+     * options.onContent callback
      * @event #options.onContent
      * @type {function}
-     * @param {object} this
-     * @param {Compo} compo
-     * @param {Element} inner
+     * @param {object} this This component object
+     * @param {Compo} content Content object
+     * @param {Element} inner Content inner nodes
      */
-    opts.onContent.call(this, this, compo, inner);
+    opts.onContent.call(this, this, content, inner);
 
     if (inner) {
-      compo.fill(inner);
+      content.fill(inner);
     }
 
-    return compo;
+    return content;
   }
 
   /**
@@ -278,11 +281,12 @@ class Modal extends base {
     this.opened = true;
 
     /**
+     * options.onOpen callback
      * @event #options.onOpen
      * @type {function}
-     * @param {object} this
-     * @param {Element} target
-     * @param {Event} evt
+     * @param {object} this This component object
+     * @param {Element} target The element is invoking
+     * @param {Event} evt Event object
      */
     opts.onOpen.call(this, this, target, evt);
 
@@ -313,11 +317,12 @@ class Modal extends base {
     this.opened = false;
 
     /**
-     * @event #options.onOpen
+     * options.onClose callback
+     * @event #options.onClose
      * @type {function}
-     * @param {object} this
-     * @param {Element} target
-     * @param {Event} evt
+     * @param {object} this This component object
+     * @param {Element} target The element is invoking
+     * @param {Event} evt Event object
      */
     opts.onClose.call(this, this, target, evt);
 
@@ -375,10 +380,11 @@ class Modal extends base {
       modal.show();
 
       /**
+       * options.onShow callback
        * @event #options.onShow
        * @type {function}
-       * @param {object} this
-       * @param {Element} target
+       * @param {object} this This component object
+       * @param {Element} target The element is invoking
        */
       opts.onShow.call(self, self, target);
     });
@@ -420,10 +426,11 @@ class Modal extends base {
       modal.unbind(root);
 
       /**
+       * options.onHide callback
        * @event #options.onHide
        * @type {function}
-       * @param {object} this
-       * @param {Element} target
+       * @param {object} this This component object
+       * @param {Element} target The element is invoking
        */
       opts.onHide.call(self, self, target);
     }, modal, 3e2);
@@ -435,8 +442,6 @@ class Modal extends base {
    * @param {Event} evt An Event
    */
   backdrop(evt) {
-    this.event().prevent(evt);
-
     const opts = this.options;
     const target = evt.target;
     const regex = new RegExp(`${opts.ns}-backdrop`);
@@ -454,7 +459,7 @@ class Modal extends base {
   keyboard(evt) {
     switch (evt.keyCode) {
       // Close
-      case 27: this.event().prevent(evt), this.close(evt); break;
+      case 27: this.close(evt); break;
     }
   }
 
