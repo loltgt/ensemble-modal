@@ -1,7 +1,7 @@
 /*!
  * ensemble Modal
  *
- * @version 0.4.0
+ * @version 0.5.0
  * @link https://github.com/loltgt/ensemble-modal
  * @copyright Copyright (C) Leonardo Laureti
  * @license MIT License
@@ -14,7 +14,7 @@
  * @exports Modal
  */
 
-import base from 'ensemble';
+import { base } from 'ensemble';
 
 
 /**
@@ -466,4 +466,4 @@ class Modal extends base {
 }
 
 
-export { Modal };
+export default Modal;
